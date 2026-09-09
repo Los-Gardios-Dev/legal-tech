@@ -63,8 +63,9 @@ default until that's clarified, rather than guessing at new wording.
 Modeled on the asset-value structure used in the client-engagement agreement
 (the pattern shown for that document), Section 9's compensation clause now:
 
-1. **Names the categories of investment** the Organization makes — human
-   capital (recruitment/screening/training), business relationships, confidential
+1. **Names the categories of investment** the Organization makes, as an actual
+   table (asset type / description of the investment) — human capital
+   (recruitment/screening/training), business relationships, confidential
    information/methodology, IP and technology, organizational/security
    infrastructure, and research/strategic assets for the partner's own work —
    instead of one undifferentiated "fine."
