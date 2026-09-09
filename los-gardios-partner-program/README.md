@@ -19,7 +19,7 @@ say so and that can be done next.
 
 | File | What it is | Pages (PDF, measured) |
 |---|---|---|
-| `Los_Gardios_Partner_Agreement_HE.docx`/`.pdf` | The short, signed contract: party ID + minimal numbered enforcement clauses + Annexes C/D + signature page. | **7** (3 of them are the actual contract clauses — see breakdown below) |
+| `Los_Gardios_Partner_Agreement_HE.docx`/`.pdf` | The short, signed contract: party ID + minimal numbered enforcement clauses + Annexes C/D + signature page. | **6** (3 of them are the actual contract clauses — see breakdown below) |
 | `Los_Gardios_Partner_Agreement_EN.docx`/`.pdf` | ⚠️ Stale — several rounds behind, do not use. | — |
 | `Los_Gardios_Partner_Handbook_HE.docx`/`.pdf` | The full original 51-page document, kept essentially as-is, repurposed as the incorporated-by-reference Handbook. | **38** |
 | `Los_Gardios_Partner_Handbook_EN.docx`/`.pdf` | ⚠️ Stale — several rounds behind, do not use. | — |
@@ -87,6 +87,21 @@ IP/technology, security infrastructure, research/strategic assets) and the
 complete anti-double-counting mechanism — lives in the Handbook's Section 9,
 in place of the old flat clause. Nothing about the substance changed this
 round, only where the short version sits.
+
+## Layout fix — checkboxes were stacking instead of sitting on one line
+
+Went through a careful side-by-side, page-by-page comparison against the
+downloaded original PDF (not just spot checks) after being asked again to
+match its layout. Found one real bug: the Discipline Group options and the
+Annex D checkboxes (9 checkboxes total) are each their own `<w:p>` paragraph
+in the source XML, immediately followed by a separate label paragraph —
+the original visually places each pair on one line ("מסחר ☐"), but the
+converter was rendering them as two stacked lines, taking roughly double
+the vertical space and looking noticeably less organized. Fixed by merging
+each checkbox with its following label onto one line; this alone brought
+the Contract down from 7 to 6 pages. Checked the logo color too, since it
+looked grayscale at a glance — sampled actual pixel values and it's
+correctly the original's purple, so that one was a false alarm, not a bug.
 
 ## Design fidelity correction — I was wrong about one thing last round
 
