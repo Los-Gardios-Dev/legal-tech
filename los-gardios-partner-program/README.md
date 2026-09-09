@@ -5,220 +5,156 @@ are Los Gardios Group's real, filled-in partner-program legal documents, not
 a generic Skills IL example. They should not be redistributed, forked, or
 installed the way the sibling `israeli-*` skill folders are.
 
-## ⚠️ Hebrew is current; English is stale (Round 3/4 not yet applied to it)
+## ⚠️ Hebrew is current; English is stale
 
-Per explicit instruction, this round's rebuild (see below) was Hebrew-only —
+This round's rebuild (see below) was Hebrew-only, per instruction —
 **`Los_Gardios_Partner_Agreement_HE` and `Los_Gardios_Partner_Handbook_HE` are
-current.** The `_EN` files are still the *previous* round's structure (the
-"short-clause-per-obligation-cluster" version, 23/16 pages) and no longer
-match the Hebrew documents' structure, section count, or the new compensation
-clause at all. Since Hebrew is the governing language (see the Agreement's
-own governing-language clause), this is a real mismatch, not just a stale
-translation — **do not send the `_EN` files to anyone alongside the new `_HE`
-files until they're rebuilt to match.** Say so and that can be done next.
+current.** The `_EN` files are several structural rounds behind and no longer
+match the Hebrew documents at all (different length, different section count,
+old compensation clause). Since Hebrew is the governing language, don't send
+the `_EN` files alongside the new `_HE` ones until they're rebuilt to match —
+say so and that can be done next.
 
-## What's here
+## What's here (current structure, as of the latest rebuild)
 
 | File | What it is | Pages (PDF, measured) |
 |---|---|---|
-| `Los_Gardios_Partner_Agreement_HE.docx`/`.pdf` | The short, signed contract. Hebrew is the binding version per its own governing-language clause. | **11** |
-| `Los_Gardios_Partner_Agreement_EN.docx`/`.pdf` | ⚠️ Stale — previous round's structure (23 pages), not this one. | 33 |
-| `Los_Gardios_Partner_Handbook_HE.docx`/`.pdf` | The operations manual, incorporated by reference — not signed separately. | **28** |
-| `Los_Gardios_Partner_Handbook_EN.docx`/`.pdf` | ⚠️ Stale — previous round's structure (16 pages), not this one. | 23 |
+| `Los_Gardios_Partner_Agreement_HE.docx`/`.pdf` | The short, signed contract: party ID + minimal numbered enforcement clauses + Annexes C/D + signature page. | **7** (3 of them are the actual contract clauses — see breakdown below) |
+| `Los_Gardios_Partner_Agreement_EN.docx`/`.pdf` | ⚠️ Stale — several rounds behind, do not use. | — |
+| `Los_Gardios_Partner_Handbook_HE.docx`/`.pdf` | The full original 51-page document, kept essentially as-is, repurposed as the incorporated-by-reference Handbook. | **38** |
+| `Los_Gardios_Partner_Handbook_EN.docx`/`.pdf` | ⚠️ Stale — several rounds behind, do not use. | — |
 
-## This round: the actual 50+ pages relocated, not rewritten
+## The current architecture (corrected this round)
 
-Earlier rounds shortened *some* sections into commitment paragraphs but kept
-much of the Agreement's own length (23 pages) — flagged at the time as not
-matching the "1-3 pages of signing" target. This round follows through on
-that instruction fully: **every section of the original contract is now
-either (a) one short paragraph in the Agreement pointing to the Handbook, or
-(b) relocated to the Handbook *verbatim* — copied from the original contract's
-own XML, not paraphrased or rewritten into new prose.** Only section
-headlines/framing were ever adapted for tone (the same treatment as the
-existing "Our Investment" chapter); the operative legal text itself is moved,
-not rewritten.
+The prior round over-engineered this: it gave the Contract one short
+paragraph per original topic (16 of them) and rebuilt the Handbook into new,
+reorganized chapters. Both were more complicated than asked for. This round
+follows the actual instruction instead:
 
-**The Agreement is 11 pages, not literally "1-3."** What keeps it above that:
-party identification, Annexes C and D (the Country Annex and the Financial
-Power-of-Attorney form — both explicitly requested to live in the signed
-Agreement itself, not the Handbook), the individual-side-letter block with its
-own blank lines and signature (Section 18(ז) in the original — this can't
-move to a shared Handbook since it's a per-partner fillable exhibit with its
-own signature line), the full compensation clause (see below), Section 15
-(dispute resolution) and Section 19 (signatures/ID/payment) kept complete
-rather than shortened, and the closing marking/signature clause. Everything
-else is now a single short paragraph. The Table of Contents was dropped
-entirely — it was sized for 55 pages and isn't needed at this length.
+**The Handbook is the original 51-page document, essentially unchanged** —
+same numbering, same Table of Contents, same recitals, same section order,
+nothing reworded or reorganized. The only edit anywhere in it: Section 9's
+old compensation sub-clauses ((ו)/(ז) — the flat NIS 100,000 figure and its
+blue-pencil clause) are replaced by the asset-category clause and table
+already agreed on with you (see below), relettered to (ו)-(י) so the
+section's own sequence stays intact. Every other section, including its many
+internal "as stated in this Agreement" self-references, is left completely
+untouched — that's intentional, not an oversight: the Contract's clause 2.2
+incorporates the Handbook "as though fully set forth" in the Contract, which
+is the standard legal mechanism that keeps those references correctly
+binding without needing to hand-edit fifty pages of cross-references.
 
-**Sections 15 and 19 were kept complete and verbatim, not shortened, on
-purpose:** forum/governing-law terms are conventionally expected to stay
-visible in the document a partner actually signs, and — separately — the
-dispute-resolution/arbitration section's phrasing was flagged as wanting a
-change that hasn't been specified yet. Verbatim preservation is the safe
-default until that's clarified, rather than guessing at new wording.
+**The Contract is new and minimal** — party identification, then five
+numbered sections of pure enforcement/incorporation machinery, decimally
+numbered (1.1, 1.2, 1.3 / 2.1-2.4 / 3.1-3.2 / 4.1-4.2 / 5.1-5.3) as asked,
+not one paragraph per original topic:
 
-## The compensation clause (Section 9) — redesigned this round
+1. **מבוא ופרשנות** — governing language, nature of the relationship
+   (profit-share only, not equity/employment), definitions-by-reference
+2. **מדריך השותף — מיזוג והתחייבות** — the actual incorporation clauses:
+   confirms the partner read the Handbook, binds them to every provision of
+   it as though written into the Contract itself, sets the amendment
+   procedure, and states which document prevails in a conflict
+3. **תמורה ופיצוי** — the partner's sole compensation is the Handbook's
+   profit-split; the malice-only compensation clause condensed to its
+   operative terms (good-faith carve-out, the NIS 100,000 floor, pointer to
+   the Handbook for the full asset-category table)
+4. **סיום ויישוב סכסוכים** — pointers to the Handbook and Annex C (Section
+   15's actual wording is still just a pointer here, not rewritten — see
+   "Still open" below, that request was never specified)
+5. **הוראות כלליות** — entire agreement, annexes, blue-pencil severability
 
-Modeled on the asset-value structure used in the client-engagement agreement
-(the pattern shown for that document), Section 9's compensation clause now:
+Then the closing marking/signature clause, Annexes C and D (attached in
+full — these are per-partner fillable forms, not general reference content,
+so they can't move to the shared Handbook), and the signature page.
 
-1. **Names the categories of investment** the Organization makes, as an actual
-   table (asset type / description of the investment) — human capital
-   (recruitment/screening/training), business relationships, confidential
-   information/methodology, IP and technology, organizational/security
-   infrastructure, and research/strategic assets for the partner's own work —
-   instead of one undifferentiated "fine."
-2. **Applies only to intentional, malicious harm.** This is now explicit and
-   prominent: *"a partner who acted in good faith and made an honest mistake
-   is not liable under this clause; a partner who deliberately and maliciously
-   harmed one of these assets must compensate the Organization for it"* — in
-   both directions, as requested.
-3. **Ties the compensation to whichever specific asset was harmed**, not one
-   flat number regardless of what happened — and if one course of conduct
-   harms more than one category, only the single highest applicable amount is
-   charged, not a stacked sum (anti-double-counting, mirroring the client-
-   agreement pattern).
-4. Keeps the **real, pre-existing figure** — NIS 100,000 per breach, as a
-   floor, uncapped — since that's an actual agreed contractual term, not
-   something to invent. **No per-category dollar figures were fabricated.**
-   The client-engagement agreement's table has real internal cost figures
-   (e.g. the $10,000 Genesis Audit); nothing equivalent exists for partner
-   recruitment/training/etc. costs, and inventing numbers for a real contract
-   would assert false facts. If you have real internal figures for any of the
-   listed categories, they can be dropped in as a genuine value table instead
-   of the category-description format used now.
+**Page breakdown, measured, not guessed:** the party-ID page + the five
+numbered sections + the marking clause come to **3 pages** — matching what
+you asked for. The remaining 4 pages are Annex C (Country Annex), Annex D
+(Financial Power of Attorney), and the signature page — attachments, not
+contract prose, per the earlier explicit instruction that C and D belong in
+the signed package. If you'd rather those didn't count against the page
+target at all — e.g. handed out as separate physical forms rather than part
+of the same PDF — say so.
 
-## Completeness audit (repeated for this round's rebuild)
+## The compensation clause — unchanged from last round, still in both places
 
-Every original section (1-19) and both annexes were confirmed present in
-either the Agreement or the Handbook by direct inspection of the rebuilt
-files, the same way the first restructuring was audited. This round's rebuild
-also re-confirmed the two real gaps the first audit found in the *original*
-contract's own drafting are still correctly filled: the subcontracting
-procedure's full mechanics (referenced by the Agreement, never actually
-written out anywhere in the original) and the "this isn't a substitute for
-your own country's data-protection compliance" disclaimer. Force majeure,
-flagged previously as missing, turned out on a second, closer look to
-actually be present in the original (Section 11(ז)) — it's carried over by
-the plain verbatim relocation and needed no separate fix.
+Section 3.2 of the Contract has the operative terms (malice-only trigger,
+good-faith carve-out, the real NIS 100,000/breach floor — no invented
+numbers). The full version — the six-category investment table (human
+capital, business relationships, confidential information/methodology,
+IP/technology, security infrastructure, research/strategic assets) and the
+complete anti-double-counting mechanism — lives in the Handbook's Section 9,
+in place of the old flat clause. Nothing about the substance changed this
+round, only where the short version sits.
 
-The old flat liquidated-damages clause and its blue-pencil sub-clause were
-confirmed **absent** from both documents, as intended — they're superseded by
-the new Section 9 compensation clause above, not merely relocated.
+## Design fidelity correction — I was wrong about one thing last round
 
-## Design fidelity fix (after feedback that the design wasn't preserved)
+Comparing pixel colors directly against the real original PDF (not just
+eyeballing a thumbnail) turned up something I'd missed and stated
+incorrectly before: **the original's rule lines — under the header, and
+under every section heading — are a deep purple (`#4B2170`), not gray.**
+I'd told you the design was "plainer, no purple" when flagging the uploaded
+Client Engagement Agreement as a different document's brand skin — that
+distinction still holds (that document's fuller card-style layout is a
+different design system), but the purple accent itself turned out to be
+part of the Partner Agreement's own real design after all, confirmed by
+sampling actual pixel values from the downloaded original, not by looking.
+Both documents' header/footer/heading rules now use the correct color.
 
-You were right — the PDF header/footer were wrong. I downloaded the actual
-original PDF from the same Drive folder as the source `.docx` files and
-compared it directly (rather than going by memory), which turned up two real
-bugs in the PDF converter (not the `.docx` — see why below):
+## Completeness / audit trail from prior rounds (still holds)
 
-- **Footer**: the original has three parts — a blank per-party initials line
-  on the left (for hand-initialing each page), "מסמך חסוי · Los Gardios
-  Group" in the center, and a real "עמוד X מתוך Y" page count on the right.
-  The PDFs sent earlier had one centered line with the wrong wording and no
-  page numbers at all.
-- **Header**: the original is a left-text / right-logo split with a rule
-  underneath, not a centered bar.
-
-Both are now fixed and match — see the header/footer on the PDFs above. One
-thing I checked and it turned out **not** to be a problem: the font looked
-different at a glance, but a side-by-side zoom of the same sentence in both
-PDFs confirmed it's the same typeface (Frank Ruhl Libre, embedded in the
-`.docx` and correctly picked up) — that was a false alarm on my part.
-
-**Why this bug didn't affect the `.docx` files**: the `.docx` files are built
-by literally copying the original's own header/footer/styles/theme XML parts
-into the new file unchanged — they were never at risk here, since nothing
-about them was regenerated. The bug was specifically in my separate, approximate
-PDF converter (see below), which was hand-building its own simplified
-header/footer instead of actually reading the original's real one. If you
-want to sanity-check design fidelity again on anything else, the `.docx` is
-the more reliable file to check — it opens with the original's real design
-system, not an approximation.
-
-## Pagination fix (after feedback that sections were bleeding across pages)
-
-Found the actual cause: the Section 18 individual side-letter block carries
-25 blank rule-lines (for hand-written per-partner notes) verbatim from the
-original — at the original's 51 pages that's unremarkable, but at 11 pages
-it was eating almost an entire page (page 7) with nothing else on it, which
-is what reads as disorganized. Cut to 8 blank lines — still plenty of room
-to write on, and this is pure whitespace, not a content change. Also added
-page-break rules so a heading can no longer land alone at the bottom of a
-page separated from its own text, and so the Section 9 table can't split
-across a page boundary. Long clauses can still span a page break (the real
-original does this constantly too — it's normal for a contract), so this
-isn't "nothing may ever cross a page," just "nothing that would look broken
-should."
-
-**On the uploaded Client Engagement Agreement PDF as a design example**: its
-layout discipline (clean chapter breaks, nothing stranded) is exactly the
-standard applied above. Its fuller visual system — purple accent color, the
-card-style overview page — is a *different* document's brand skin, not the
-Partner Agreement's own; the Partner Agreement's actual original design
-(confirmed by direct comparison against the real original PDF) is plainer,
-gray-accented, no purple. Kept matching that rather than importing the other
-document's color scheme, per the standing "preserve the original's design"
-instruction — say so if you actually want the fuller color treatment carried
-over instead.
-
-**On "is 11 pages relevant"**: yes, in the sense that every page has real,
-necessary content on it now (no more dead space) — see the page-count
-breakdown above for exactly what's keeping it above "1-3 pages" (party ID,
-Annexes C/D, the compensation clause and table, dispute resolution,
-signatures). It's not padding; it's what's left after everything that could
-move to the Handbook did.
+Every original section (1-19) and both annexes are present — trivially true
+now, since the Handbook is the original document itself. The two real gaps
+found in the *original* contract's own drafting during the first audit
+(the subcontracting procedure's full mechanics, referenced but never
+actually written out anywhere in the original; the "not a substitute for
+your own country's compliance" disclaimer) are **not** restored in this
+version, since they were additions to the previous, more heavily-edited
+Handbook draft, not part of the original document this round now uses
+verbatim. Flagging this explicitly: if those two gap-fills should still be
+added to the current Handbook, say so and it's a small, targeted addition
+in Section 2 and Section 10 respectively, not a structural change.
 
 ## PDF generation — how, and one limitation to know about
 
 This sandboxed environment's LibreOffice install is broken (confirmed via
-strace — it fails even converting a plain `.txt` file, with and without
-this session's own command-sandboxing disabled, so it's an environment
-issue, not something to route around unsafely). There's no Word/LibreOffice
-renderer available here, so the PDFs were produced via a custom docx→HTML
-converter + WeasyPrint (a standalone Python PDF engine) — preserving the
-real fonts, logo, RTL layout, bold formatting, and running header/footer,
-but rebuilding the page layout rather than using Word's own renderer.
-**Recommendation: open the `.docx` files in actual Word or Google Docs at
-some point and re-export to PDF from there for the version you actually
-send out** — the `.docx` files themselves are the ones built directly from
-the original file's XML (fonts/logo/styles inherited, not recreated), so
-they're the higher-fidelity source; these PDFs are a close approximation
-for review purposes.
+strace — it fails even converting a plain `.txt` file), so the PDFs are
+produced via a custom docx→HTML converter + WeasyPrint rather than Word's
+own renderer — preserving real fonts, logo, RTL layout, bold formatting, the
+running header/footer, and now the correct accent color, but rebuilding
+page layout rather than using Word's own. **Recommendation: open the
+`.docx` files in actual Word or Google Docs and re-export to PDF from there
+for the version you actually send out** — the `.docx` files are built
+directly from the original file's XML (fonts/logo/styles/theme inherited
+verbatim, not recreated), so they're the higher-fidelity source; these PDFs
+are a close approximation for review.
 
 ## Other things worth knowing
 
-**Naming.** The Handbook is named the **Partner Handbook** (מדריך השותף), not
-"Organization Protocols" — the original contract already uses a different,
-capitalized, non-incorporated term ("the Source Protocol," Section 1) for
-HQ's internal compensation/tier framework, and reusing "Protocols" for the
-new document would have collided with it. The Agreement explicitly
-distinguishes the two.
+**Naming.** The Handbook is named the **Partner Handbook** (מדריך השותף),
+not "Organization Protocols" — the original contract already uses a
+different, capitalized, non-incorporated term ("the Source Protocol,"
+Section 1) for HQ's internal compensation/tier framework, and reusing
+"Protocols" would have collided with it.
 
-The Agreement incorporates the Handbook by reference (the "17." clause): the
-Organization can update the Handbook's operational content with advance
-written notice, but not the Agreement's core terms (pay, confidentiality, IP,
-the compensation clause) without the partner's written consent, and the
-Agreement prevails over the Handbook in the event of any conflict.
-
-**Pre-existing issue found, not introduced here:** the *original* English
-convenience translation has its own internal lettering drift in Section 8
-(its English sub-clauses don't quite line up with the Hebrew ones a couple
-of clauses in) — harmless since Hebrew governs, but worth a look if the
-English copy is ever relied on directly.
+**Pre-existing issue, not introduced here:** the *original* English
+convenience translation has its own internal lettering drift in Section 8 —
+harmless since Hebrew governs, worth a look if the English copy is ever
+relied on directly.
 
 ## Still open
 
-1. **Git push.** These commits are local only. Given the confidentiality
-   notice above (real filled-in contracts, not a generic template), pushing
-   to the shared repo needs an explicit yes — asked before, still open.
-2. **Dispute-resolution/arbitration phrasing.** Flagged as wanting a change,
-   specifics not yet given — Section 15 was left verbatim this round rather
-   than guessed at (see above).
-3. **English rebuild.** The `_EN` files need the same treatment as `_HE` to
-   stop being stale (see the warning at the top).
+1. **Git push.** Commits are local only. Given the confidentiality notice
+   above, pushing to the shared repo needs an explicit yes — asked
+   repeatedly, still open.
+2. **Dispute-resolution/arbitration phrasing (Section 15 / Contract 4.2).**
+   Flagged early on as wanting a change; specifics never given, so it's
+   still just a pointer rather than a guess at new wording.
+3. **English rebuild.** Needs the same treatment as `_HE`.
+4. **The two gap-fills** (subcontracting procedure, data-compliance
+   disclaimer) — not in the current Handbook; say if you want them added
+   back (see Completeness section above).
 
 ## Recommended next step
 
