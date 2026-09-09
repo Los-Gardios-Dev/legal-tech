@@ -138,6 +138,39 @@ want to sanity-check design fidelity again on anything else, the `.docx` is
 the more reliable file to check — it opens with the original's real design
 system, not an approximation.
 
+## Pagination fix (after feedback that sections were bleeding across pages)
+
+Found the actual cause: the Section 18 individual side-letter block carries
+25 blank rule-lines (for hand-written per-partner notes) verbatim from the
+original — at the original's 51 pages that's unremarkable, but at 11 pages
+it was eating almost an entire page (page 7) with nothing else on it, which
+is what reads as disorganized. Cut to 8 blank lines — still plenty of room
+to write on, and this is pure whitespace, not a content change. Also added
+page-break rules so a heading can no longer land alone at the bottom of a
+page separated from its own text, and so the Section 9 table can't split
+across a page boundary. Long clauses can still span a page break (the real
+original does this constantly too — it's normal for a contract), so this
+isn't "nothing may ever cross a page," just "nothing that would look broken
+should."
+
+**On the uploaded Client Engagement Agreement PDF as a design example**: its
+layout discipline (clean chapter breaks, nothing stranded) is exactly the
+standard applied above. Its fuller visual system — purple accent color, the
+card-style overview page — is a *different* document's brand skin, not the
+Partner Agreement's own; the Partner Agreement's actual original design
+(confirmed by direct comparison against the real original PDF) is plainer,
+gray-accented, no purple. Kept matching that rather than importing the other
+document's color scheme, per the standing "preserve the original's design"
+instruction — say so if you actually want the fuller color treatment carried
+over instead.
+
+**On "is 11 pages relevant"**: yes, in the sense that every page has real,
+necessary content on it now (no more dead space) — see the page-count
+breakdown above for exactly what's keeping it above "1-3 pages" (party ID,
+Annexes C/D, the compensation clause and table, dispute resolution,
+signatures). It's not padding; it's what's left after everything that could
+move to the Handbook did.
+
 ## PDF generation — how, and one limitation to know about
 
 This sandboxed environment's LibreOffice install is broken (confirmed via
