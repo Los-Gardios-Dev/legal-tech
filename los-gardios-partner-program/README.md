@@ -19,12 +19,42 @@ say so and that can be done next.
 
 | File | What it is | Pages (PDF, measured) |
 |---|---|---|
-| `Los_Gardios_Partner_Agreement_HE.docx`/`.pdf` | The short, signed contract: party ID + minimal numbered enforcement clauses + Annexes C/D + signature page. | **6** (3 of them are the actual contract clauses — see breakdown below) |
+| `Los_Gardios_Partner_Agreement_HE.docx`/`.pdf` | The short, signed contract: party ID + minimal numbered enforcement clauses + Annexes C/D + signature page. | **7** (2 of them are the actual contract clauses — see breakdown below) |
 | `Los_Gardios_Partner_Agreement_EN.docx`/`.pdf` | ⚠️ Stale — several rounds behind, do not use. | — |
-| `Los_Gardios_Partner_Handbook_HE.docx`/`.pdf` | The full original 51-page document, kept essentially as-is, repurposed as the incorporated-by-reference Handbook. | **38** |
+| `Los_Gardios_Partner_Handbook_HE.docx`/`.pdf` | The full original 51-page document, kept essentially as-is, repurposed as the incorporated-by-reference Handbook. | **50** (now paginated like a book — see below) |
 | `Los_Gardios_Partner_Handbook_EN.docx`/`.pdf` | ⚠️ Stale — several rounds behind, do not use. | — |
 
-## The current architecture (corrected this round)
+## Book-style formatting (this round)
+
+Researched how contracts and handbooks are actually formatted professionally
+before making these changes, per instruction, rather than guessing — see
+Sources at the bottom. Three changes:
+
+1. **Handbook: every major section now starts on its own fresh page**, with
+   a bolder heading (a purple rule above and below, not just below) —
+   matching the standard convention of clear chapter breaks in both
+   contract and handbook design. This is why it grew from 38 to 50 pages:
+   a section that only fills a third of a page still starts its neighbor on
+   a clean new page rather than running straight into it, the same way a
+   book's chapters do (this is a real design choice, not empty padding) —
+   and it also lands within one page of the *original* 51-page document's
+   own length, which is a good sign this matches its natural pagination
+   rather than over-inflating it. The Table of Contents was already intact
+   (this round's Handbook is the original document, ToC included).
+2. **Contract: numbered sub-clauses (1.1, 1.2...) are now visibly indented**
+   under their parent section, and each of the five sections has the same
+   framed heading style as the Handbook's chapters — both are standard
+   contract-drafting convention (decimal numbering plus indentation to show
+   hierarchy).
+3. **Removed repeated boilerplate.** The previous draft ended nearly half its
+   sub-clauses with some variant of "as detailed in the Partner Handbook" —
+   redundant, since clause 2.2 already establishes once that every Handbook
+   provision binds the partner as if written into the Contract itself.
+   Trimmed those down to a single specific cross-reference (by section
+   number) only where it's genuinely useful for navigation, stated once
+   per topic rather than tacked onto every sentence.
+
+## The current architecture
 
 The prior round over-engineered this: it gave the Contract one short
 paragraph per original topic (16 of them) and rebuilt the Handbook into new,
@@ -69,13 +99,14 @@ full — these are per-partner fillable forms, not general reference content,
 so they can't move to the shared Handbook), and the signature page.
 
 **Page breakdown, measured, not guessed:** the party-ID page + the five
-numbered sections + the marking clause come to **3 pages** — matching what
-you asked for. The remaining 4 pages are Annex C (Country Annex), Annex D
-(Financial Power of Attorney), and the signature page — attachments, not
-contract prose, per the earlier explicit instruction that C and D belong in
-the signed package. If you'd rather those didn't count against the page
-target at all — e.g. handed out as separate physical forms rather than part
-of the same PDF — say so.
+numbered sections + the marking clause come to **2 pages** — tighter than
+last time, since the boilerplate trim (above) actually shortened the text.
+The remaining 5 pages are Annex C (Country Annex), Annex D (Financial Power
+of Attorney), and the signature page — attachments, not contract prose, per
+the earlier explicit instruction that C and D belong in the signed package.
+If you'd rather those didn't count against the page target at all — e.g.
+handed out as separate physical forms rather than part of the same PDF —
+say so.
 
 ## The compensation clause — unchanged from last round, still in both places
 
