@@ -107,6 +107,37 @@ The old flat liquidated-damages clause and its blue-pencil sub-clause were
 confirmed **absent** from both documents, as intended — they're superseded by
 the new Section 9 compensation clause above, not merely relocated.
 
+## Design fidelity fix (after feedback that the design wasn't preserved)
+
+You were right — the PDF header/footer were wrong. I downloaded the actual
+original PDF from the same Drive folder as the source `.docx` files and
+compared it directly (rather than going by memory), which turned up two real
+bugs in the PDF converter (not the `.docx` — see why below):
+
+- **Footer**: the original has three parts — a blank per-party initials line
+  on the left (for hand-initialing each page), "מסמך חסוי · Los Gardios
+  Group" in the center, and a real "עמוד X מתוך Y" page count on the right.
+  The PDFs sent earlier had one centered line with the wrong wording and no
+  page numbers at all.
+- **Header**: the original is a left-text / right-logo split with a rule
+  underneath, not a centered bar.
+
+Both are now fixed and match — see the header/footer on the PDFs above. One
+thing I checked and it turned out **not** to be a problem: the font looked
+different at a glance, but a side-by-side zoom of the same sentence in both
+PDFs confirmed it's the same typeface (Frank Ruhl Libre, embedded in the
+`.docx` and correctly picked up) — that was a false alarm on my part.
+
+**Why this bug didn't affect the `.docx` files**: the `.docx` files are built
+by literally copying the original's own header/footer/styles/theme XML parts
+into the new file unchanged — they were never at risk here, since nothing
+about them was regenerated. The bug was specifically in my separate, approximate
+PDF converter (see below), which was hand-building its own simplified
+header/footer instead of actually reading the original's real one. If you
+want to sanity-check design fidelity again on anything else, the `.docx` is
+the more reliable file to check — it opens with the original's real design
+system, not an approximation.
+
 ## PDF generation — how, and one limitation to know about
 
 This sandboxed environment's LibreOffice install is broken (confirmed via
