@@ -5,6 +5,50 @@ are Los Gardios Group's real, filled-in partner-program legal documents, not
 a generic Skills IL example. They should not be redistributed, forked, or
 installed the way the sibling `israeli-*` skill folders are.
 
+## Final QA pass (4 parallel Haiku subagents, then critically reviewed)
+
+Before calling this a final product, dispatched four independent review
+agents in parallel (design/aesthetics, legal completeness/redundancy,
+Hebrew phrasing, structural/psychological ordering) and then went through
+every finding myself rather than applying them automatically — some were
+solid, a few were mistaken, a couple would have contradicted your own
+explicit instructions.
+
+**Applied:**
+- **Reordered Contract sections 3 and 4.** Compensation/damages now comes
+  *after* termination & dispute resolution, not before — reading "here's
+  how the relationship generally works and ends" before "here's the
+  penalty for maliciously wrecking it" avoids the real ₪100,000 figure
+  landing on the reader with no context first, which is exactly the
+  "ambush" feeling you've asked this clause not to have since Round 4.
+- **Moved the marking/acknowledgment clause** ("I have read and am bound by
+  the Handbook") to *after* Annexes C and D, right before the signature
+  page — it shouldn't ask a partner to attest they understood everything
+  before the annexes even appear in front of them.
+- A handful of small Hebrew wording fixes in the Handbook's new
+  compensation clause and Contract 5.3 (grammatical number agreement,
+  one genuinely ambiguous phrase, two redundant words) — none change
+  meaning, all just clarity.
+
+**Declined, with reasons:**
+- Expanding Contract sections 3/4 (now termination and compensation) with
+  more substantive detail — this is exactly what you asked to move *out*
+  of the Contract and into the Handbook; adding it back would undo that.
+- Several Hebrew "fixes" that turned out, on checking, to be wrong: e.g.
+  one agent flagged "הימנו" as a typo for "ממנו" — it's actually correct,
+  more formal Hebrew that matches the document's own register (and
+  appears in verbatim original text elsewhere), not an error.
+- A suggestion to reword one already-original, verbatim-preserved sentence
+  in the Handbook — out of scope, since "maintain this exact document" is
+  the standing instruction for anything that isn't newly drafted this
+  round.
+
+The completeness and design reviews came back clean (no missing content,
+no contradictions between the Contract and Handbook, no visual defects
+across all 7 Contract pages and 8 sampled Handbook pages) — reassuring,
+but at this point expected given the extent of what's already been checked
+in earlier rounds.
+
 ## ⚠️ Hebrew is current; English is stale
 
 This round's rebuild (see below) was Hebrew-only, per instruction —
