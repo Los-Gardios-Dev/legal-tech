@@ -49,6 +49,36 @@ across all 7 Contract pages and 8 sampled Handbook pages) — reassuring,
 but at this point expected given the extent of what's already been checked
 in earlier rounds.
 
+## Real bug the 4-agent review missed, caught by direct inspection instead
+
+You spotted that the Handbook still had signature pages in it — worth being
+upfront that the automated review above did **not** catch this; it took you
+actually looking. Checked it directly and found three separate problems,
+not just the one:
+
+- **Section 19** (the main signature block — names, signature lines, date,
+  organization/partner stamps) was in **both** the Handbook and the
+  Contract. It only belongs in the Contract, since that's the document
+  that's actually signed.
+- **Annexes C and D** were also in both places, for the same reason —
+  they're per-partner fillable forms (banking details, power of attorney),
+  not shared reference material.
+- **The individual side-letter block** (space for recording specific
+  negotiated deviations, with its own two signature lines — originally
+  Section 18(ז) in the source) was in the Handbook **only** — not in the
+  Contract at all. That's arguably the more serious of the three: it's
+  genuine signable content that had nowhere a partner could actually sign
+  it.
+
+Fixed: removed the first two from the Handbook entirely (they're already in
+the Contract), and moved the side-letter block into the Contract, right
+after Section 5, trimmed to 8 blank lines rather than the original's 25 for
+the same page-density reason as the earlier pagination fix. The Handbook
+now ends cleanly after Section 18's general provisions — no signature
+content anywhere in it. Handbook dropped from 50 to 44 pages as a result;
+Contract stayed at 7 (the added side-letter block was offset by removing
+it being compact).
+
 ## ⚠️ Hebrew is current; English is stale
 
 This round's rebuild (see below) was Hebrew-only, per instruction —
@@ -65,7 +95,7 @@ say so and that can be done next.
 |---|---|---|
 | `Los_Gardios_Partner_Agreement_HE.docx`/`.pdf` | The short, signed contract: party ID + minimal numbered enforcement clauses + Annexes C/D + signature page. | **7** (2 of them are the actual contract clauses — see breakdown below) |
 | `Los_Gardios_Partner_Agreement_EN.docx`/`.pdf` | ⚠️ Stale — several rounds behind, do not use. | — |
-| `Los_Gardios_Partner_Handbook_HE.docx`/`.pdf` | The full original 51-page document, kept essentially as-is, repurposed as the incorporated-by-reference Handbook. | **50** (now paginated like a book — see below) |
+| `Los_Gardios_Partner_Handbook_HE.docx`/`.pdf` | The original document minus its signing mechanics (Section 19, Annexes C/D, the side-letter block — all Contract-only now), repurposed as the incorporated-by-reference Handbook. | **44** (paginated like a book — see below) |
 | `Los_Gardios_Partner_Handbook_EN.docx`/`.pdf` | ⚠️ Stale — several rounds behind, do not use. | — |
 
 ## Book-style formatting (this round)
