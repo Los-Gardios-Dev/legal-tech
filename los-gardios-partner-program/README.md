@@ -5,6 +5,97 @@ are Los Gardios Group's real, filled-in partner-program legal documents, not
 a generic Skills IL example. They should not be redistributed, forked, or
 installed the way the sibling `israeli-*` skill folders are.
 
+## Round 6 — design pass: spacing, real Table of Contents, first-person Contract, a completeness bugfix
+
+Your last message bundled several distinct asks; here's what each one turned
+into, plus one thing I found while implementing that wasn't on your list.
+
+**1. Tier compensation split — verified against the actual text, you were
+right.** You said you weren't sure the Handbook clearly covers "each layer
+gets a fixed 20%, split equally among however many partners are actively
+working that layer on that project." Section 6(ד) states exactly that:
+*"הנתח המשוחרר לשכבה נתונה מתחלק שווה בשווה בין השותפים הפעילים המשובצים
+לאותה שכבה באותה התקשרות"* — the share released to a given layer splits
+equally among the partners actively assigned to that layer on that specific
+engagement (2 people → 10% each; 5 → 4% each, exactly the self-balancing
+dynamic you described). No change needed here — just confirming it's really
+in there.
+
+**2. Handbook still had a leftover fill-in block.** You were right again:
+items after the org description were still the full party-ID block (name,
+country, ID number, entity type, address, email, Discipline Group
+checkboxes) — a straight duplicate of the Contract's own copy. Removed from
+the Handbook; the Contract's copy is the only one left anywhere.
+
+**3. Table of Contents — rebuilt, not patched.** What you were pointing at
+("no design, something looks off about the positioning") is real: the
+original document's own ToC has no page numbers and no dot leaders at all —
+confirmed by inspecting its raw XML, there's no Word ToC field, just plain
+text lines with two blank spacer paragraphs between every entry, which is
+also most of what was reading as "excessive spacing." Rebuilt it from
+scratch: real dot leaders, real page numbers (genuinely measured — rendered
+the Handbook once, located the actual page each section lands on, then
+rebaked those numbers into the final version, since this pipeline doesn't
+have Word's own live-updating ToC field), one compact line per entry, and
+the three stale entries for content that moved to the Contract (Annex D,
+Annex C, Section 19) dropped.
+
+**4. Handbook now reads like chapter dividers, not just headings.** Every
+section heading is now a full-width purple banner in white text that starts
+its own page — closer to the "partner-onboarding presentation" feel you
+asked for than the previous thin rule-lines-above-and-below treatment.
+
+**5. Contract: flat first-person clauses, light headers.** Rewrote every
+operative clause in Sections 1-5 from third person ("השותף מתחייב...") to
+first person ("הנני מתחייב...", "הנני מאשר...") per your three example
+sentences — this is now genuinely "the partner's own commitments," not a
+description of them. The five section headings stay (1./2./3./4./5., still
+decimally numbered 1.1/1.2.../2.1/2.2... exactly like your dictation), but
+they no longer get the Handbook's heavy banner treatment — just bold text
+and a thin rule, no forced page break, so the Contract still reads as one
+flat sequence rather than a multi-chapter document. That split (heavy
+banners in the Handbook, light headers in the Contract) is my reading of
+"don't need all the chapter headers/annexes/mess" — happy to adjust if you
+meant something more literal, like dropping the section headers entirely
+and running 1.1-5.3 as one unbroken numbered list.
+
+**6. Stamp boxes enlarged; Annex D visually marked optional.** The
+Organization/Partner stamp boxes at the signature page are now real boxes
+(~2.7in × 0.85in) instead of a thin full-width strip. Annex D now renders
+inside a distinct tan callout box with a gold border — your instinct was
+right, and it turns out the original document's own Table of Contents
+*already* labels it "(אופציונלי — למילוי רק במידת הצורך)" — I reused that
+exact existing phrase rather than inventing new wording, just made it
+visually impossible to miss.
+
+**7. Marking clause polished.** Reworded to explicitly say "אני מודע/ת
+במלואי להתחייבויותיי" (fully aware of my obligations) and commit "במלואן,
+ללא יוצא מן הכלל ובאופן מוחלט" (fully, without exception, absolutely) —
+closer to your suggested phrasing, still a first-person confirm-by-checkbox
+clause right before the signature page.
+
+**8. On "too many separate signature points":** looked at every signature
+line in the Contract. Two are genuinely separate on purpose, not
+redundancy — Annex C's banking-detail signoff and Annex D's power-of-attorney
+signatures are different legal acts from the main signature (wrong banking
+details or an unauthorized POA are real, distinct risks; keeping them as
+their own explicit signoff is closer to standard practice, not less). I
+didn't remove any signature line without checking what it actually covered
+first — say if you want a specific one gone regardless.
+
+**9. Bug I found while fixing the above, not on your list: Section
+6(ט)/(י)/(יא) were missing from the Handbook entirely.** The original
+document physically wedges Annex D *inside* Section 6, between sub-clauses
+(ח) and (ט) — every earlier round's Annex D splice swept up those three real
+Section 6 sub-clauses (expense/budget limits, tool costs, setoff and
+recoupment) as if they were part of the POA annex. Net effect: they weren't
+in the Handbook at all (even though this round's own new compensation
+clause already cites "סעיף 6(יא)" — a dangling reference until now), and in
+the Contract they sat, mislabeled, inside what's now a box saying "optional,
+skip if not applicable" — which they are not. Fixed: 6(ט)-(יא) moved to the
+Handbook (right after 6(ח), continuing the section's own lettering), and
+Annex D in the Contract trimmed to the POA form itself.
+
 ## Final QA pass (4 parallel Haiku subagents, then critically reviewed)
 
 Before calling this a final product, dispatched four independent review
@@ -93,9 +184,9 @@ say so and that can be done next.
 
 | File | What it is | Pages (PDF, measured) |
 |---|---|---|
-| `Los_Gardios_Partner_Agreement_HE.docx`/`.pdf` | The short, signed contract: party ID + minimal numbered enforcement clauses + Annexes C/D + signature page. | **7** (2 of them are the actual contract clauses — see breakdown below) |
+| `Los_Gardios_Partner_Agreement_HE.docx`/`.pdf` | The short, signed contract: party ID + flat first-person numbered clauses + Annexes C/D + signature page. | **8** (2 of them are the actual contract clauses — see breakdown below) |
 | `Los_Gardios_Partner_Agreement_EN.docx`/`.pdf` | ⚠️ Stale — several rounds behind, do not use. | — |
-| `Los_Gardios_Partner_Handbook_HE.docx`/`.pdf` | The original document minus its signing mechanics (Section 19, Annexes C/D, the side-letter block — all Contract-only now), repurposed as the incorporated-by-reference Handbook. | **44** (paginated like a book — see below) |
+| `Los_Gardios_Partner_Handbook_HE.docx`/`.pdf` | The original document minus its signing mechanics (Section 19, Annexes C/D, the side-letter block, the fill-in party-ID block — all Contract-only now) plus a real Table of Contents, repurposed as the incorporated-by-reference Handbook. | **45** (paginated like a book — see below) |
 | `Los_Gardios_Partner_Handbook_EN.docx`/`.pdf` | ⚠️ Stale — several rounds behind, do not use. | — |
 
 ## Book-style formatting (this round)
