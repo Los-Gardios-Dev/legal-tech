@@ -74,6 +74,12 @@ while i < len(lines):
     if s == "---":
         out.append('<div class="pagebreak"></div>'); i += 1; continue
 
+    # a line of only underscores is a hand-fill blank — render as a
+    # full-width ruled line rather than a <p>, whose justify/intrinsic-width
+    # behavior shrinks an unbroken run of "_" to far less than the page width
+    if re.fullmatch(r'_+', s):
+        out.append('<div class="fillline"></div>'); i += 1; continue
+
     m = re.match(r'^(#{1,4})\s+(.*)$', s)
     if m:
         lvl, txt = len(m.group(1)), m.group(2)
@@ -279,6 +285,7 @@ tbody td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
 hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 .pagebreak{border-top:1px solid var(--rule);margin:26px 0}
 .hardbreak{break-before:page;page-break-before:always}
+.fillline{border-bottom:1px solid var(--rule);height:26px;margin:0 0 4px}
 /* Compact per-section banner — a colored badge letter and a one-line
    description above the heading, in the same eyebrow language as the
    Guide's chapter dividers, sized to cost no extra page per section. */
