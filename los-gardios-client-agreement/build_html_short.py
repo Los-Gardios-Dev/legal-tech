@@ -47,6 +47,11 @@ while i < len(lines):
     if s == "<!--group-end-->":
         out.append('</div>'); i += 1; continue
 
+    # forced hard page break (distinct from "---", which is a cosmetic
+    # divider only) — used where a section must start on its own page
+    if s == "<!--newpage-->":
+        out.append('<div class="hardbreak"></div>'); i += 1; continue
+
     # table
     if s.startswith("|") and i + 1 < len(lines) and re.match(r'^\|[\s:|-]+\|$', lines[i+1].strip()):
         close_tbl()
@@ -273,6 +278,7 @@ tbody td{border-bottom:1px solid var(--rule);padding:7px 9px;vertical-align:top}
  padding:11px 14px;margin:13px 0;font-size:9.6pt;color:#382c1f}
 hr{border:0;border-top:1px solid var(--rule);margin:22px 0}
 .pagebreak{border-top:1px solid var(--rule);margin:26px 0}
+.hardbreak{break-before:page;page-break-before:always}
 /* Compact per-section banner — a colored badge letter and a one-line
    description above the heading, in the same eyebrow language as the
    Guide's chapter dividers, sized to cost no extra page per section. */
