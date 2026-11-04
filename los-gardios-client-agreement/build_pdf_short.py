@@ -10,7 +10,7 @@ import os
 _HERE = os.path.dirname(os.path.abspath(__file__))
 HTML_PATH = os.path.join(_HERE, "AGREEMENT_SHORT_HE.html")
 PDF_PATH = os.path.join(_HERE, "AGREEMENT_SHORT_HE.pdf")
-CHROMIUM = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome"
+CHROMIUM = "/opt/pw-browsers/chromium-1243/chrome-linux64/chrome"
 
 FOOTER_TEMPLATE = """
 <div style="width:100%;font-family:Heebo,Helvetica,Arial,sans-serif;font-size:7.5pt;

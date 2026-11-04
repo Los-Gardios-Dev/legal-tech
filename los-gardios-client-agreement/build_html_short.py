@@ -2,6 +2,7 @@
 """Render AGREEMENT_v2_HE.md as an A4, RTL, print-ready document that keeps
 the visual language of the original Los Gardios PDF."""
 import io, re, html, base64, os
+from fonts_embed import embedded_font_css
 
 src = io.open("AGREEMENT_SHORT_HE.md", encoding="utf-8").read()
 lines = src.split("\n")
@@ -306,9 +307,7 @@ doc = f"""<!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Los Gardios — הסכם התקשרות עם לקוח</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@600;700&display=swap" rel="stylesheet">
+{embedded_font_css()}
 <style>{CSS}</style></head>
 <body><div class="sheet">
 <div class="masthead">

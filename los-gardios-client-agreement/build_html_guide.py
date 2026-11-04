@@ -43,6 +43,7 @@ of the old form.
 import io, os, re, base64
 
 from md_guide_parser import load_guide, render_block, render_blocks, render_table, split_lead, inline_to_html
+from fonts_embed import embedded_font_css
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _ASSETS = os.path.join(_HERE, "assets")
@@ -1057,9 +1058,7 @@ doc = f"""<!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Los Gardios — מדריך הלקוח</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700&family=Frank+Ruhl+Libre:wght@600;700&display=swap" rel="stylesheet">
+{embedded_font_css()}
 <style>{CSS}</style></head>
 <body><div class="sheet">
 {body}
