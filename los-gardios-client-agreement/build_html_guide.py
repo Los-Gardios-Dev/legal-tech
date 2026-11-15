@@ -70,9 +70,9 @@ CSS = """
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:#ded6c6;color:var(--ink);direction:rtl;
- font-family:"Heebo","Frank Ruhl Libre",Georgia,serif;font-size:10.4pt;line-height:1.82}
+ font-family:"Heebo","Frank Ruhl Libre",Georgia,serif;font-size:10.4pt;line-height:1.58}
 .sheet{max-width:820px;margin:0 auto;background:var(--cream)}
-.page{position:relative;padding:16mm 20mm 20mm;min-height:257mm;background:var(--cream)}
+.page{position:relative;padding:13mm 20mm 16mm;min-height:257mm;background:var(--cream)}
 .page.dark{background:var(--espresso)}
 .page + .page{break-before:page;page-break-before:always}
 em,i{font-style:italic}
@@ -80,7 +80,7 @@ em,i{font-style:italic}
 /* ---------- running header (breadcrumb style) ---------- */
 .pagehead{display:flex;justify-content:space-between;align-items:flex-end;
  font-family:"Heebo",sans-serif;font-size:7.4pt;letter-spacing:.16em;color:var(--muted);
- border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:8mm}
+ border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:5mm}
 .pagehead.on-dark{color:#9c8f7a;border-bottom-color:var(--espresso-line)}
 .pagehead .brand{display:flex;align-items:center;gap:8px;text-transform:uppercase;color:var(--ink);font-weight:700}
 .pagehead.on-dark .brand{color:#EDE6D8}
@@ -94,7 +94,7 @@ em,i{font-style:italic}
 
 /* ---------- in-flow footer (repeats only where placed; Playwright's own
    footer_template supplies the reliable per-physical-page numbering) ---------- */
-.pagefoot{margin-top:16mm;padding-top:10px;border-top:1px solid var(--rule);
+.pagefoot{margin-top:9mm;padding-top:8px;border-top:1px solid var(--rule);
  display:flex;justify-content:space-between;font-family:"Heebo",sans-serif;
  font-size:7.2pt;letter-spacing:.1em;color:var(--muted)}
 .page.dark .pagefoot{border-top-color:var(--espresso-line);color:#8a7d68}
@@ -135,66 +135,68 @@ em,i{font-style:italic}
 .eyebrow{font-family:"Heebo",sans-serif;font-size:8pt;letter-spacing:.15em;
  color:var(--gold-deep);font-weight:700;margin-bottom:6px}
 h1.sec{font-family:"Frank Ruhl Libre",serif;font-size:20pt;font-weight:600;
- line-height:1.35;margin:0 0 10px}
-.secrule{height:1px;background:linear-gradient(to left,var(--gold),transparent);margin:0 0 16px}
+ line-height:1.3;margin:0 0 8px;break-after:avoid}
+.secrule{height:1px;background:linear-gradient(to left,var(--gold),transparent);margin:0 0 11px}
 h2.sub{display:flex;align-items:center;gap:10px;font-family:"Frank Ruhl Libre",serif;
- font-size:13pt;font-weight:600;color:var(--ink);margin:24px 0 10px}
+ font-size:13pt;font-weight:600;color:var(--ink);margin:15px 0 7px;break-after:avoid}
 h2.sub::before{content:"";width:20px;height:1px;background:var(--gold);flex:none}
-.body-copy{font-family:"Heebo",sans-serif;font-size:9.8pt;line-height:1.95;
- color:#382c1f;margin:0 0 14px}
+.body-copy{font-family:"Heebo",sans-serif;font-size:9.8pt;line-height:1.6;
+ color:#382c1f;margin:0 0 10px}
 strong{font-weight:700;color:var(--ink)}
 
 /* ---------- CARDS (two-up profile style) ---------- */
-.cardgrid{display:flex;gap:14px;margin:16px 0}
+.cardgrid{display:flex;gap:12px;margin:10px 0}
 .cardgrid.stack{flex-direction:column}
 .cardgrid.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .cardgrid.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .cardgrid.grid3 .card{padding:13px 14px}
 .cardgrid.grid3 .card-title{font-size:11pt;margin:0 0 6px}
-.cardgrid.grid3 .card p{font-size:8.6pt;line-height:1.75}
+.cardgrid.grid3 .card p{font-size:8.6pt;line-height:1.5}
 .card{flex:1;background:var(--cream2);border:1px solid var(--rule);border-top:3px solid var(--gold);
- border-radius:2px;padding:16px 18px;break-inside:avoid-page;page-break-inside:avoid}
+ border-radius:2px;padding:12px 14px;break-inside:avoid-page;page-break-inside:avoid}
 .card-label{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.13em;
- color:var(--gold-deep);margin-bottom:8px;font-weight:700}
-.card-title{font-family:"Frank Ruhl Libre",serif;font-size:12.5pt;font-weight:600;margin:0 0 8px}
-.card p{font-family:"Heebo",sans-serif;font-size:9.5pt;color:#4a3d2c;line-height:1.85;margin:0}
+ color:var(--gold-deep);margin-bottom:6px;font-weight:700}
+.card-title{font-family:"Frank Ruhl Libre",serif;font-size:12.5pt;font-weight:600;margin:0 0 6px}
+.card p{font-family:"Heebo",sans-serif;font-size:9.5pt;color:#4a3d2c;line-height:1.55;margin:0}
 
 /* ---------- KEY-INSIGHT / WARNING callouts ---------- */
 .callout{border-inline-start:3px solid var(--gold-deep);background:var(--cream2);
- padding:13px 18px;margin:16px 0;font-family:"Heebo",sans-serif;font-size:9.3pt;
- color:#3d3222;line-height:1.85;break-inside:avoid-page;page-break-inside:avoid}
+ padding:10px 15px;margin:10px 0;font-family:"Heebo",sans-serif;font-size:9.3pt;
+ color:#3d3222;line-height:1.55;break-inside:avoid-page;page-break-inside:avoid}
 .callout b{color:var(--ink)}
 .callout.warn{border-inline-start-color:var(--warn-border);background:var(--warn-bg);color:#5c2c26}
 .callout.warn b{color:var(--warn-label)}
 .callout-label{font-style:italic;font-weight:700}
 
 /* ---------- STAT TILE ROW ---------- */
-.stats{display:flex;gap:10px;margin:18px 0;break-inside:avoid-page;page-break-inside:avoid}
+.stats{display:flex;gap:10px;margin:10px 0;break-inside:avoid-page;page-break-inside:avoid}
 .stat{flex:1;background:var(--cream2);border:1px solid var(--rule);border-radius:2px;
- padding:14px 8px;text-align:center;break-inside:avoid-page}
+ padding:10px 8px;text-align:center;break-inside:avoid-page}
 .stat-num{font-family:"Frank Ruhl Libre",serif;font-size:16pt;font-weight:700;color:var(--gold-deep);unicode-bidi:isolate}
 .stat-cap{font-family:"Heebo",sans-serif;font-size:7.6pt;color:var(--muted);
- margin-top:5px;line-height:1.5}
+ margin-top:4px;line-height:1.35}
 
 /* ---------- PROMPT / REFLECTION BOX ---------- */
-.prompt{background:var(--cream2);border-radius:2px;padding:14px 18px;margin:14px 0;
+.prompt{background:var(--cream2);border-radius:2px;padding:10px 15px;margin:9px 0;
  border-inline-start:2px solid var(--gold);break-inside:avoid-page;page-break-inside:avoid}
 .prompt-label{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.13em;
- color:var(--gold-deep);font-weight:700;margin-bottom:6px}
-.prompt-q{font-family:"Heebo",sans-serif;font-size:9.6pt;color:#382c1f;line-height:1.85}
+ color:var(--gold-deep);font-weight:700;margin-bottom:5px}
+.prompt-q{font-family:"Heebo",sans-serif;font-size:9.6pt;color:#382c1f;line-height:1.55}
 .fine{font-family:"Heebo",sans-serif;font-size:8.5pt;color:var(--muted);
- line-height:1.8;border-inline-start:2px solid var(--rule);padding-inline-start:12px;margin:12px 0;
+ line-height:1.5;border-inline-start:2px solid var(--rule);padding-inline-start:12px;margin:8px 0;
  break-inside:avoid-page;page-break-inside:avoid}
 
 /* ---------- PROCESS DIAGRAM ---------- */
-.process{margin:20px 0}
-.pstep{display:flex;gap:16px;align-items:flex-start;padding:13px 0;
+.process{margin:12px 0}
+.pstep{display:flex;gap:16px;align-items:flex-start;padding:9px 0;
  border-bottom:1px solid var(--rule);break-inside:avoid-page;page-break-inside:avoid}
 .pstep:last-child{border-bottom:none}
 .pnum{flex:none;width:28px;height:28px;border-radius:50%;background:var(--espresso);color:var(--gold);
  font-family:"Frank Ruhl Libre",serif;font-weight:700;font-size:11.5pt;
  display:flex;align-items:center;justify-content:center;unicode-bidi:isolate}
-.ptxt{font-family:"Heebo",sans-serif;font-size:9.5pt;color:#382c1f;line-height:1.85;padding-top:3px}
+.ptxt{font-family:"Heebo",sans-serif;font-size:9.5pt;color:#382c1f;line-height:1.55;padding-top:2px}
+.lead-line{font-family:"Frank Ruhl Libre",serif;font-weight:600;font-size:14pt;color:var(--gold-deep);margin:2px 0 10px;line-height:1.4}
+.site-line{font-family:"Heebo",sans-serif;font-size:8.6pt;letter-spacing:.12em;color:var(--gold-deep);margin-top:12px;text-align:center;unicode-bidi:isolate}
 
 /* ---------- FLOW (operating-model diagram) ---------- */
 .flow{display:flex;align-items:center;gap:8px;margin:22px 0 8px}
@@ -206,15 +208,15 @@ strong{font-weight:700;color:var(--ink)}
 .flow-node{width:60px;height:60px;border-radius:50%;background:var(--espresso);color:var(--gold);
  display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
 .flow-connector{flex:0 0 22px;height:1px;background:var(--gold);align-self:center;margin-top:20px}
-.flow-loop{margin-top:14px;font-family:"Heebo",sans-serif;font-size:8.6pt;color:var(--muted);
- text-align:center;line-height:1.8;padding:0 20px}
+.flow-loop{margin-top:10px;font-family:"Heebo",sans-serif;font-size:8.6pt;color:var(--muted);
+ text-align:center;line-height:1.5;padding:0 20px}
 
 /* ---------- CONTRAST ROW (not-vs-is) ---------- */
-.contrast{border-radius:2px;padding:11px 16px;margin:10px 0;font-family:"Heebo",sans-serif;
- font-size:9.3pt;break-inside:avoid-page;page-break-inside:avoid}
+.contrast{border-radius:2px;padding:9px 14px;margin:7px 0;font-family:"Heebo",sans-serif;
+ font-size:9.3pt;line-height:1.5;break-inside:avoid-page;page-break-inside:avoid}
 .contrast.dim{background:var(--cream3);color:var(--muted);border:1px dashed var(--rule)}
 .contrast.affirm{background:var(--cream2);border-inline-start:3px solid var(--gold);
- color:var(--gold-deep);font-weight:700;padding:15px 18px;font-size:9.8pt}
+ color:var(--gold-deep);font-weight:700;padding:11px 14px;font-size:9.8pt}
 
 /* ---------- PERMISSION PAGE (quiet, typographic) ---------- */
 .permission-quote{font-family:"Frank Ruhl Libre",serif;font-style:italic;font-weight:600;
@@ -246,11 +248,11 @@ strong{font-weight:700;color:var(--ink)}
  font-size:8.6pt;font-weight:700;text-align:center;line-height:1.15}
 
 /* ---------- MICRO TABLE (break-even defaults) ---------- */
-table.micro{width:100%;border-collapse:collapse;margin:14px 0;font-family:"Heebo",sans-serif;
+table.micro{width:100%;border-collapse:collapse;margin:8px 0;font-family:"Heebo",sans-serif;
  font-size:9.2pt;break-inside:avoid-page;page-break-inside:avoid}
 table.micro th{text-align:start;font-size:7.6pt;letter-spacing:.1em;color:var(--gold-deep);
  font-weight:700;padding:0 0 8px;border-bottom:1px solid var(--rule)}
-table.micro td{padding:10px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:#382c1f}
+table.micro td{padding:7px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:#382c1f}
 table.micro td:first-child{color:var(--ink);font-weight:600;width:38%}
 
 /* ---------- DATA TABLE (illustrative forecast example) ---------- */
@@ -304,9 +306,9 @@ table.fcast th.sec-fin{border-top:3px solid var(--purple)}
    see md_guide_parser.py's render_flist for the markdown convention
    (`- [ ] label`) that produces this block wherever it's used. */
 .ifields{margin-inline-start:0;font-family:"Heebo",sans-serif;font-size:9.3pt;
- color:#382c1f;line-height:2.2;margin-top:4px;margin-bottom:10px}
+ color:#382c1f;line-height:1.7;margin-top:3px;margin-bottom:7px}
 .ifields .f{display:flex;align-items:baseline;gap:8px;border-bottom:1px dotted var(--rule);
- padding:4px 0}
+ padding:3px 0}
 .ifields .f .flabel{flex:1 1 auto;min-width:0;color:#4a3d2c}
 .ifields .f .fline{flex:0 0 70px;border-bottom:1px solid var(--rule);min-height:13px}
 
@@ -341,8 +343,9 @@ table.fcast th.sec-fin{border-top:3px solid var(--purple)}
 def pagehead(num, title, dark=False):
     cls = "pagehead on-dark" if dark else "pagehead"
     return (f'<div class="{cls}"><span class="brand"><img src="{LOGO_MARK}">'
-            f'<span class="lat">LOS GARDIOS</span> · מדריך הלקוח</span>'
-            f'<span class="crumb"><span class="num">{num}</span> · {title}</span>'
+            f'<span class="lat">LOS GARDIOS HOLDINGS</span> · מדריך הלקוח</span>'
+            + (f'<span class="crumb"><span class="num">{num}</span> · {title}</span>' if num else
+               f'<span class="crumb">{title}</span>') +
             f'<span class="org">לוס גרדיוס בע"מ</span></div>')
 
 def pagefoot():
@@ -406,13 +409,52 @@ PAGES = []
 _cover_title = G.title.split('—')[0].strip()
 PAGES.append(f'''<div class="page dark cover">
   <img src="{LOGO_MARK}" class="cover-mark">
-  <div class="cover-eyebrow">L O S &nbsp; G A R D I O S</div>
+  <div class="cover-eyebrow">L O S &nbsp; G A R D I O S &nbsp; H O L D I N G S</div>
   <div class="cover-title">{_cover_title}</div>
   <div class="cover-rule"></div>
   <div class="cover-sub">מי אנחנו · איך אנחנו עובדים · מה עומד מאחורי העבודה<br>קריאה לפני תחילת הדרך המשותפת</div>
   <div class="cover-tags"><span class="cover-tag">סודי</span><span class="cover-tag">גרסה {G.version} · {G.updated_date}</span></div>
-  <div class="cover-foot">CONFIDENTIAL · LOS GARDIOS GROUP</div>
+  <div class="cover-foot">CONFIDENTIAL · LOS GARDIOS HOLDINGS</div>
 </div>''')
+
+# ==================================================================
+# OPENING (unnumbered) — who we are, how we work, the journey. Sits
+# between the cover and chapter 01 and deliberately takes no chapter
+# number, so chapters 1–10 (and the Agreement's citations of chapters
+# 1 and 2) keep their numbers.
+# ==================================================================
+_intro = G.chapter("פתח_דבר")
+
+# P1 — Los Gardios Holdings: tagline, intro, the four groups as cards
+_sec_hold = _intro.section("Los Gardios Holdings")
+_hb = _sec_hold.blocks  # [tagline, intro, table(groups), experts para, site line]
+_group_cards = "".join(
+    f'<div class="card"><div class="card-title">{inline_to_html(r[0])}</div><p>{inline_to_html(r[1])}</p></div>'
+    for r in _hb[2]["rows"])
+PAGES.append(content_page(None, "פתח דבר · מי אנחנו", "מי אנחנו", _sec_hold.title, "\n".join([
+    f'<p class="lead-line">{inline_to_html(_hb[0]["lead"])}</p>',
+    render_block(_hb[1]),
+    f'<div class="cardgrid grid2">{_group_cards}</div>',
+    render_block(_hb[3]),
+    f'<div class="site-line">{_hb[4]["html"]}</div>',
+])))
+
+# P2 — every client gets their own work model
+_sec_model0 = _intro.section("כל לקוח — מודל עבודה משלו")
+PAGES.append(content_page(None, "פתח דבר · איך אנחנו עובדים", "איך אנחנו עובדים", _sec_model0.title,
+                          render_blocks(_sec_model0.blocks)))
+
+# P3 — the journey, step by step (numbered process component)
+_sec_journey = _intro.section("המסע שלכם, שלב אחר שלב")
+_jb = _sec_journey.blocks  # [intro, olist(steps), italic fine-print]
+_jsteps = "".join(
+    f'<div class="pstep"><div class="pnum">{i}</div><div class="ptxt">{item}</div></div>'
+    for i, item in enumerate(_jb[1]["items"], start=1))
+PAGES.append(content_page(None, "פתח דבר · התהליך", "התהליך", _sec_journey.title, "\n".join([
+    render_block(_jb[0]),
+    f'<div class="process">{_jsteps}</div>',
+    render_block(_jb[2]),
+])))
 
 # ==================================================================
 # DIVIDER 01 — How Los Gardios Works (identity, operating mechanics,
@@ -423,23 +465,7 @@ PAGES.append(f'''<div class="page dark cover">
 # ==================================================================
 _ch1 = G.chapter("1")
 PAGES.append(divider("01", _ch1,
-    "מי אנחנו, איך ההתקשרות מתנהלת, מי קובע מה, ואילו נכסים ומערכות עומדים מאחורי העבודה."))
-
-# ------------------------------------------------------------------
-# 1.1 — Who we are + how the relationship works
-# ------------------------------------------------------------------
-_sec_who = _ch1.section("מי אנחנו")
-_sec_how = _ch1.section("איך ההתקשרות מתנהלת")
-PAGES.append(f'''<div class="page">
-{pagehead("01", _sec_who.title)}
-<div class="eyebrow">זהות</div>
-<h1 class="sec">{_sec_who.title}</h1>
-<div class="secrule"></div>
-{render_blocks(_sec_who.blocks)}
-<h2 class="sub">{_sec_how.title}</h2>
-{render_blocks(_sec_how.blocks)}
-{pagefoot()}
-</div>''')
+    "העיקרון המנחה, מי קובע מה, ואילו נכסים ומערכות עומדים מאחורי העבודה."))
 
 # ------------------------------------------------------------------
 # 1.2 — The client-controlled principle + who-decides-what
@@ -486,16 +512,6 @@ PAGES.append(content_page("01", _sec_assets.title, "מה עומד מאחורי �
 # 1.3's page rather than via a standalone generic_section_page call.
 # ------------------------------------------------------------------
 
-# ------------------------------------------------------------------
-# 1.5 — Business identity fields (content-architecture pass, v3.1):
-# these used to live in the standalone Intake Form at the end of the
-# document; they're general administrative/context fields with no
-# single strong topical home elsewhere in the guide, so they sit at the
-# end of chapter 1 instead. Generic fallback page — plain paragraphs +
-# one inline field group, nothing that needs a bespoke layout.
-# ------------------------------------------------------------------
-PAGES.append(generic_section_page("01", _ch1.section("כמה פרטים בסיסיים עליכם ועל העסק"), "פרטים מנהליים"))
-
 # ==================================================================
 # DIVIDER 02 — Engagement Models. Chapter number is load-bearing:
 # AGREEMENT_SHORT_HE.md §1 cites "מדריך הלקוח, פרק 2" for the Track
@@ -523,14 +539,9 @@ def _track_card(block):
 
 _sec_tracks = _ch2.section("ארבעת המסלולים")
 _tb = _sec_tracks.blocks  # [track0, trackA, trackB, trackC, mechanism-fine, unsure-callout]
-# Split across two physical pages (structural, page-grouping only) — the
-# full verbatim section no longer fits one page the way the old
-# paraphrase did.
 PAGES.append(content_page("02", _sec_tracks.title, "מסגרות מסחריות נתמכות", _sec_tracks.title, "\n".join([
     render_block(_ch2.intro_blocks()[0]),
     '<div class="cardgrid grid2">' + "".join(_track_card(b) for b in _tb[0:4]) + '</div>',
-])))
-PAGES.append(content_page("02", _sec_tracks.title + " (המשך)", "מסגרות מסחריות נתמכות", _sec_tracks.title + " — המשך", "\n".join([
     f'<div class="fine">{_tb[4]["html"]}</div>',
     render_block(_tb[5]),
 ])))
@@ -642,22 +653,15 @@ for i, item_html in enumerate(_paths_ulist["items"]):
         f'<div class="card"><div class="card-label">נתיב {_HEBREW_ORDINALS[i]}</div>'
         f'<div class="card-title">{title}</div><p>{body}</p></div>'
     )
+_sec_goals = _ch3.section("היעד והציפיות שלכם")
 _paths_body = "\n".join([
     render_block(_sec_paths.blocks[0]),
     '<div class="cardgrid stack">' + "".join(_path_cards) + '</div>',
     render_blocks(_sec_paths.blocks[2:]),
+    f'<h2 class="sub">{_sec_goals.title}</h2>',
+    render_blocks(_sec_goals.blocks),
 ])
 PAGES.append(content_page("03", _sec_paths.title, "בחירה", _sec_paths.title, _paths_body))
-
-# ------------------------------------------------------------------
-# 3.5 — Goals. Content-architecture pass, v3.1: this used to be one
-# running-prose "ספרו לנו: Q? Q? Q?" paragraph split apart at render
-# time by split_ask into a .prompt reflection box; the .md now writes
-# the three questions as real field bullets (`- [ ] ...`), so the
-# generic renderer (render_blocks) already produces the field rows —
-# no bespoke splitting code needed any more.
-# ------------------------------------------------------------------
-PAGES.append(generic_section_page("03", _ch3.section("היעד והציפיות שלכם"), "לפני המספרים"))
 
 # ------------------------------------------------------------------
 # 3.6 — Investment framework. "ספרו לנו:" + a real field list (`- [ ]`)
@@ -669,18 +673,16 @@ PAGES.append(generic_section_page("03", _ch3.section("היעד והציפיות 
 # instruction).
 # ------------------------------------------------------------------
 _sec_invest = _ch3.section("מסגרת ההשקעה שלכם")
-_ib = _sec_invest.blocks  # [intro, "ספרו לנו:", flist(4), reminder-para, terms-para, track0-fine]
+_ib = _sec_invest.blocks  # [intro, reminder-para, terms-para, track0-fine]
 _invest_body = "\n".join([
     render_block(_ib[0]),
     render_block(_ib[1]),
-    render_block(_ib[2]),
-    render_block(_ib[3]),
     '<div class="eyebrow" style="margin-top:8px">מסגרת A/B/C — מה שכדאי לדעת כבר עכשיו</div>',
     '<div class="stats" style="margin:6px 0">'
     '<div class="stat"><div class="stat-num">3</div><div class="stat-cap">חודשים · התחייבות תקציב מינימלית</div></div>'
     '<div class="stat"><div class="stat-num">30</div><div class="stat-cap">יום · הודעה מראש להפחתת תקציב</div></div>'
     '</div>',
-    render_block(_ib[4]),
+    render_block(_ib[2]),
     # Compact .fine treatment (not .callout): this page is already dense
     # (field rows + stat tiles), and .callout's padding/border-on-all-
     # sides pushed the page's pagefoot onto a near-empty extra page even
@@ -689,37 +691,29 @@ _invest_body = "\n".join([
     # for anyway; its lighter treatment (border-inline-start only, no
     # fill) reclaims the remaining vertical space. Matches the generic
     # classification (see ASIDE_CLASS — "הערה ללקוחות מסלול 0:" -> fine).
-    f'<div class="fine" style="margin:4px 0 0">{_ib[5]["html"]}</div>',
+    f'<div class="fine" style="margin:4px 0 0">{_ib[3]["html"]}</div>',
 ])
 PAGES.append(content_page("03", _sec_invest.title, "תשומת הקלט המרכזית", _sec_invest.title, _invest_body))
 
 # ------------------------------------------------------------------
-# 3.7 — Timeline (generic; see 3.5's comment — same conversion)
+# 3.7/3.8 — Timeline + financial boundaries, merged onto one page
+# (ground-truth page grouping): the timeline section's closing line
+# cross-references "תקופת הסובלנות" (פרק 8) and the financial-boundaries
+# section's own closing paragraph covers strategic boundaries too, so
+# both sit together under the "גבולות פיננסיים" title.
 # ------------------------------------------------------------------
-PAGES.append(generic_section_page("03", _ch3.section("טווח הזמן שלכם"), "תכנון"))
-
-# ------------------------------------------------------------------
-# 3.8 — Financial boundaries (generic body + the existing default-value
-# stat tiles, kept as hand-authored presentation since they're not a
-# sentence of prose but a compact restatement of the two defaults
-# already stated in the section's own closing paragraph)
-# ------------------------------------------------------------------
+_sec_timeline = _ch3.section("טווח הזמן שלכם")
 _sec_bounds = _ch3.section("גבולות פיננסיים")
-PAGES.append(content_page("03", _sec_bounds.title, "הגנה עליכם", _sec_bounds.title, "\n".join([
+PAGES.append(content_page("03", _sec_bounds.title, "תכנון · הגנה עליכם", _sec_bounds.title, "\n".join([
+    render_blocks(_sec_timeline.blocks),
+    f'<h2 class="sub">{_sec_bounds.title}</h2>',
     render_blocks(_sec_bounds.blocks),
-    '<div class="eyebrow" style="margin-top:18px">ברירות המחדל, אם לא תיקבע תקרה</div>',
+    '<div class="eyebrow" style="margin-top:14px">ברירות המחדל, אם לא תיקבע תקרה</div>',
     '<div class="stats">'
     '<div class="stat"><div class="stat-num">30</div><div class="stat-cap">יום · תקופת מדידת Stop-Loss</div></div>'
     '<div class="stat"><div class="stat-num">10%</div><div class="stat-cap">חריגה מותרת מהתקציב החודשי</div></div>'
     '</div>',
 ])))
-
-# ------------------------------------------------------------------
-# 3.9 — Strategic boundaries (new subsection — content-architecture
-# pass, v3.1: strategic red lines used to live only in the end-of-
-# document Intake Form; placed as a sibling of "גבולות פיננסיים" here).
-# ------------------------------------------------------------------
-PAGES.append(generic_section_page("03", _ch3.section("גבולות אסטרטגיים"), "הגנה עליכם"))
 
 # ==================================================================
 # DIVIDER 04 — Genesis. Previously mentioned only as the tail of the
@@ -759,9 +753,7 @@ PAGES.append(f'''<div class="page">
 # 4.2 — Genesis output rights
 # ------------------------------------------------------------------
 _sec_rights = _ch4.section("מה מקבלים, ומה זה לא כולל")
-_rb = _sec_rights.blocks  # [what-you-get, what-you-dont-warn, buyout, continued-fine, secrecy-fine, separate-genesis-fine]
-PAGES.append(content_page("04", _sec_rights.title, "שקיפות מלאה", _sec_rights.title, render_blocks(_rb[0:2])))
-PAGES.append(content_page("04", _sec_rights.title + " (המשך)", "שקיפות מלאה", _sec_rights.title + " — המשך", render_blocks(_rb[2:])))
+PAGES.append(content_page("04", _sec_rights.title, "שקיפות מלאה", _sec_rights.title, render_blocks(_sec_rights.blocks)))
 
 # ==================================================================
 # DIVIDER 05 — Project Infrastructure (new chapter — build report
@@ -774,8 +766,13 @@ _ch5 = G.chapter("5")
 PAGES.append(divider("05", _ch5,
     "מה עומד מאחורי הביצוע בפועל של הפרויקט, מעבר לשלב המחקר — ואיך Atlas Network מרחיב את הטווח התפעולי."))
 
-PAGES.append(generic_section_page("05", _ch5.section("מה עומד מאחורי הביצוע בפועל"), "מייעוץ לביצוע"))
-PAGES.append(generic_section_page("05", _ch5.section("Atlas Network"), "רשת מסחרית בינלאומית"))
+_sec_exec = _ch5.section("מה עומד מאחורי הביצוע בפועל")
+_sec_atlas = _ch5.section("Atlas Network")
+PAGES.append(content_page("05", _sec_exec.title, "מייעוץ לביצוע", _sec_exec.title, "\n".join([
+    render_blocks(_sec_exec.blocks),
+    f'<h2 class="sub">{_sec_atlas.title}</h2>',
+    render_blocks(_sec_atlas.blocks),
+])))
 
 # ==================================================================
 # DIVIDER 06 — Human Capital & Proprietary Technology (new chapter —
@@ -786,8 +783,13 @@ _ch6 = G.chapter("6")
 PAGES.append(divider("06", _ch6,
     "מי מפעיל את הפרויקט שלכם בפועל, ואיזו תשתית טכנולוגית — Neuron — עומדת מאחורי הצוות."))
 
-PAGES.append(generic_section_page("06", _ch6.section("הון אנושי"), "הרשת שמאחורי הצוות"))
-PAGES.append(generic_section_page("06", _ch6.section("טכנולוגיה קניינית ומערכות פנימיות"), "תשתית תפעולית"))
+_sec_hc = _ch6.section("הון אנושי")
+_sec_tech = _ch6.section("טכנולוגיה קניינית ומערכות פנימיות")
+PAGES.append(content_page("06", _sec_hc.title, "הרשת שמאחורי הצוות", _sec_hc.title, "\n".join([
+    render_blocks(_sec_hc.blocks),
+    f'<h2 class="sub">{_sec_tech.title}</h2>',
+    render_blocks(_sec_tech.blocks),
+])))
 PAGES.append(generic_section_page("06", _ch6.section("נתונים, פגישות ופרטיות — בקצרה"), "בקצרה"))
 
 # ==================================================================
@@ -925,21 +927,16 @@ _ch8_intro = _ch8.intro_blocks()[0]
 # [0,1,2] / [3,4,5,6] rather than the old [0,1,2] / [3,4,5].
 # ------------------------------------------------------------------
 _sec_tol = _ch8.section("רמת ותקופת הסובלנות שלכם")
-_tb2 = _sec_tol.blocks  # [plain-terms, example, default-callout, deficit-callout, ask-lead, ask-flist, rights]
-# Split across two physical pages — see the four-tracks page's comment.
+_tb2 = _sec_tol.blocks  # [plain-terms, example, default-callout, deficit-callout, ask-sentence, rights]
 PAGES.append(content_page("08", _sec_tol.title, "גמישות סביב רווחיות", _sec_tol.title, "\n".join([
     render_block(_ch8_intro),
     render_block(_tb2[0]),
     render_block(_tb2[1]),
     render_block(_tb2[2]),
-])))
-_tol_body2 = "\n".join([
     render_block(_tb2[3]),
     render_block(_tb2[4]),
     render_block(_tb2[5]),
-    render_block(_tb2[6]),
-])
-PAGES.append(content_page("08", _sec_tol.title + " (המשך)", "גמישות סביב רווחיות", _sec_tol.title + " — המשך", _tol_body2))
+])))
 
 # ------------------------------------------------------------------
 # 8.2 — Staged commercial architecture + shared growth. Two md sections
@@ -963,7 +960,11 @@ PAGES.append(content_page("08", _sec_flex.title, "ארכיטקטורה, לא ה�
 # ==================================================================
 _ch9 = G.chapter("9")
 PAGES.append(divider("09", _ch9,
-    "מה קורה אחרי החתימה: קצב הדיווח, מה טעון אישורכם, ומה קורה אם רף ה-Stop-Loss נחצה."))
+    "מה קורה אחרי החתימה: איך ההתקשרות מתנהלת, קצב הדיווח, מה טעון אישורכם, ומה קורה אם רף ה-Stop-Loss נחצה."))
+
+# 9.0 — How the engagement is conducted (moved here from chapter 1:
+# operational/legal mechanics belong after signing, not in the opening)
+PAGES.append(generic_section_page("09", _ch9.section("איך ההתקשרות מתנהלת"), "המסגרת התפעולית"))
 
 # ------------------------------------------------------------------
 # 9.1 — Oversight & reporting. Each bullet's own leading bold phrase
@@ -984,8 +985,6 @@ for item_html in _oversight_ulist["items"]:
 PAGES.append(content_page("09", _sec_oversight.title, "מה קורה אחרי החתימה", _sec_oversight.title, "\n".join([
     render_block(_sec_oversight.blocks[0]),
     '<div class="cardgrid grid3">' + "".join(_oversight_cards[:3]) + '</div>',
-])))
-PAGES.append(content_page("09", _sec_oversight.title + " (המשך)", "מה קורה אחרי החתימה", _sec_oversight.title + " — המשך", "\n".join([
     '<div class="cardgrid grid2">' + "".join(_oversight_cards[3:]) + '</div>',
 ])))
 
@@ -1003,7 +1002,7 @@ PAGES.append(content_page("09", _sec_oversight.title + " (המשך)", "מה קו
 # ==================================================================
 _ch10 = G.chapter("10")
 PAGES.append(divider("10", _ch10,
-    "מ-Genesis ועד להצעה חתומה — התהליך המלא שלב אחר שלב, ואיפה למצוא כל שדה שנדרש מכם."))
+    "מ-Genesis ועד להצעה חתומה — התהליך המלא שלב אחר שלב, ואת טופס קליטת הלקוח שמפעיל אותו."))
 
 # ------------------------------------------------------------------
 # 10.1 — Process diagram. Steps are the section's own numbered list, in
@@ -1027,17 +1026,16 @@ PAGES.append(content_page("10", _sec_process.title, "התהליך", _sec_process
 PAGES.append(generic_section_page("10", _ch10.section("תזכורת"), "לפני שממשיכים", breadcrumb_title="תזכורת"))
 
 # ------------------------------------------------------------------
-# 10.3 — Where to find each field. Content-architecture pass, v3.1:
-# this replaces the standalone end-of-document "## טופס קליטה" chapter
-# (three igroups of field rows, collected in one place away from their
-# explanations) now that every field lives inline, next to the
-# paragraph that explains it, in chapters 1/3/4/7/8. Chapter 10 already
-# carries the "here's the process" content this guide closes on, so
-# this short index absorbs the old form's closing role instead of
-# giving it a divider/chapter of its own. Generic fallback page — a
-# short paragraph plus the section's own bullet list, nothing bespoke.
+# 10.3 — Consolidated client intake form. Content-architecture pass,
+# v3.2: the fields that used to live scattered inline in chapters
+# 1/3/4/7/8 (v3.1's layout) are consolidated back into one end-of-
+# document form, split into three sub-sections (א/ב/ג) each rendered as
+# its own page via the generic fallback — plain paragraphs + the
+# section's own flist field rows, nothing bespoke.
 # ------------------------------------------------------------------
-PAGES.append(generic_section_page("10", _ch10.section("איפה למצוא כל שדה"), "מפת השדות"))
+PAGES.append(generic_section_page("10", _ch10.section("טופס קליטת לקוח"), "טופס קליטת לקוח"))
+PAGES.append(generic_section_page("10", _ch10.section("טופס קליטת לקוח — מסחרי"), "טופס קליטת לקוח — מסחרי"))
+PAGES.append(generic_section_page("10", _ch10.section("טופס קליטת לקוח — אסטרטגי"), "טופס קליטת לקוח — אסטרטגי"))
 
 # ==================================================================
 # Closing
@@ -1048,7 +1046,7 @@ PAGES.append(f'''<div class="page dark closing">
     <div class="closing-eyebrow"><span class="dash"></span>לסיום</div>
     <div class="closing-title">כל המידע במדריך זה משמש לתכנון ולהערכה בלבד</div>
     <p>חתימה על הסכם ההתקשרות עצמו כן כרוכה בתשלום הרלוונטי למסלולכם. ההתחייבות המסחרית המלאה להיקף, למחיר ולתנאי ההתקשרות הספציפית נוצרת רק ב"הצעה" חתומה בנפרד — עד אז, כל מה שסיפרתם לנו נשאר פתוח לשינוי.<br><br>אנחנו מוכנים כשאתם מוכנים.</p>
-    <div class="closing-brand"><img src="{LOGO_MARK}"><div class="tx"><div class="n">LOS GARDIOS</div><div class="t">מדריך הלקוח — סודי</div></div></div>
+    <div class="closing-brand"><img src="{LOGO_MARK}"><div class="tx"><div class="n">LOS GARDIOS HOLDINGS</div><div class="t">מדריך הלקוח — סודי</div></div></div>
   </div>
 </div>''')
 

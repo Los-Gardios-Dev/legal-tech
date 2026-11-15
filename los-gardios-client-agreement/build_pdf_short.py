@@ -29,7 +29,7 @@ HEADER_TEMPLATE = """
 <div style="width:100%;font-family:Heebo,Helvetica,Arial,sans-serif;font-size:6.8pt;
  color:#7D6F5C;text-align:center;direction:rtl;letter-spacing:.09em;
  -webkit-print-color-adjust:exact;print-color-adjust:exact;">
-  LOS GARDIOS &nbsp;·&nbsp; סודי · CONFIDENTIAL &nbsp;·&nbsp; הסכם התקשרות עם לקוח
+  LOS GARDIOS HOLDINGS &nbsp;·&nbsp; סודי · CONFIDENTIAL &nbsp;·&nbsp; הסכם התקשרות עם לקוח
 </div>
 """
 

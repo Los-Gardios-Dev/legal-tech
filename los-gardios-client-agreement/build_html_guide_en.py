@@ -1,0 +1,1054 @@
+# -*- coding: utf-8 -*-
+"""Render CLIENT_GUIDE_HE.md as a premium, editorial-feeling A4 RTL PDF.
+
+Design language: dark espresso section dividers with ghost numerals, a
+cream content-page body, a brass/gold accent system (rules, eyebrows,
+stat tiles, key-insight callouts), and Los Gardios' own Velvet Purple
+used sparingly as the brand-identity touch (logo mark, one accent line
+on the cover, a single narrative accent inside two of the new diagrams)
+rather than as the dominant hue — the warm gold/espresso palette is the
+editorial atmosphere; purple is the brand anchor.
+
+The underlying Hebrew CONTENT is parsed from CLIENT_GUIDE_HE.md (source
+of truth) at build time by md_guide_parser.py; this build script is
+presentation-only — page grouping, diagram composition and the Intake
+Form's field grouping/order are the only structural decisions made here,
+and every sentence of prose it prints comes from the parsed tree, never
+from a Python string literal. New concepts (the operating-model flow,
+the sustainability principle, the Genesis specialist-lens system, the
+oversight/reporting mechanics) are all authored in CLIENT_GUIDE_HE.md
+first and merely visualized here. See md_guide_parser.py's module
+docstring for the parser's conventions and the aside-classification
+contract (which bold lead-ins render as .callout / .callout.warn / .fine
+vs plain .body-copy).
+
+Chapter map (content-architecture refinement pass, v3.0): 10 numbered
+chapters. Two chapter numbers are LOAD-BEARING beyond this file —
+heading "Foundations of the Cost of Protecting the Organization's Assets" — so chapter 1 (who we are +
+the org's protected assets) and chapter 2 (commercial models) keep those
+exact numbers even though this is otherwise a full narrative reorder.
+See CLIENT_GUIDE_HE.md's own chapter order for the rest.
+
+Content-architecture pass, v3.1: the standalone end-of-document "Intake
+Form" chapter is gone. Every field it used to collect now lives inline,
+right after the explanatory paragraph it belongs to, in whichever
+chapter that is (1, 3, 4, 7 or 8) — see md_guide_parser.py's render_flist
+for the markdown-level convention (`- [ ] label`) and CSS section for
+the shared dotted-line field-row look this produces wherever it's used.
+Chapter 10 closes with a short "where to find each field" index instead
+of the old form.
+"""
+import io, os, re, base64
+
+from md_guide_parser_en import load_guide, render_block, render_blocks, render_table, split_lead, inline_to_html
+from fonts_embed import embedded_font_css
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_ASSETS = os.path.join(_HERE, "assets")
+G = load_guide(os.path.join(_HERE, "CLIENT_GUIDE_EN.md"))
+
+def _data_uri(fname):
+    with open(os.path.join(_ASSETS, fname), "rb") as f:
+        return "data:image/png;base64," + base64.b64encode(f.read()).decode("ascii")
+
+# Full-resolution, tight-cropped source (see assets/ note) — replaces the
+# low-res logo_mark_web.png that caused visible blur when placed small in
+# headers/cover/closing. Same artwork, no redesign, just more real pixels.
+LOGO_MARK = _data_uri("logo_mark_crisp.png")
+
+CSS = """
+:root{
+  --espresso:#241A12; --espresso2:#2C2015; --espresso-line:#3d2f20;
+  --cream:#FAF5EB; --cream2:#F2E9D8; --cream3:#EDE2CC;
+  --ink:#2A2118; --muted:#7D6F5C; --rule:#E3D8C3;
+  --gold:#A9824F; --gold-deep:#8C6A3D; --gold-pale:rgba(169,130,79,.09);
+  --purple:#5B2986;
+  --warn-bg:#F7EBE8; --warn-border:#8C3B32; --warn-label:#8C3B32;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#ded6c6;color:var(--ink);direction:ltr;
+ font-family:"Heebo","Frank Ruhl Libre",Georgia,serif;font-size:10.4pt;line-height:1.58}
+.sheet{max-width:820px;margin:0 auto;background:var(--cream)}
+.page{position:relative;padding:13mm 20mm 16mm;min-height:257mm;background:var(--cream)}
+.page.dark{background:var(--espresso)}
+.page + .page{break-before:page;page-break-before:always}
+em,i{font-style:italic}
+
+/* ---------- running header (breadcrumb style) ---------- */
+.pagehead{display:flex;justify-content:space-between;align-items:flex-end;
+ font-family:"Heebo",sans-serif;font-size:7.4pt;letter-spacing:.16em;color:var(--muted);
+ border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:5mm}
+.pagehead.on-dark{color:#9c8f7a;border-bottom-color:var(--espresso-line)}
+.pagehead .brand{display:flex;align-items:center;gap:8px;text-transform:uppercase;color:var(--ink);font-weight:700}
+.pagehead.on-dark .brand{color:#EDE6D8}
+.pagehead .brand img{height:15px}
+.pagehead .brand .lat{unicode-bidi:isolate}
+.pagehead .crumb{color:var(--gold-deep);font-weight:700}
+.pagehead.on-dark .crumb{color:var(--gold)}
+.pagehead .crumb .num{unicode-bidi:isolate}
+.pagehead .org{color:var(--purple);opacity:.72}
+.pagehead.on-dark .org{color:#b9a4d6;opacity:.8}
+
+/* ---------- in-flow footer (repeats only where placed; Playwright's own
+   footer_template supplies the reliable per-physical-page numbering) ---------- */
+.pagefoot{margin-top:9mm;padding-top:8px;border-top:1px solid var(--rule);
+ display:flex;justify-content:space-between;font-family:"Heebo",sans-serif;
+ font-size:7.2pt;letter-spacing:.1em;color:var(--muted)}
+.page.dark .pagefoot{border-top-color:var(--espresso-line);color:#8a7d68}
+
+/* ---------- COVER ---------- */
+.cover{min-height:297mm;padding:0;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;text-align:center;position:relative}
+.cover-mark{width:60px;height:auto;margin-bottom:34px;filter:brightness(0) invert(1);opacity:.95}
+.cover-eyebrow{font-family:"Heebo",sans-serif;font-weight:700;font-size:10.5pt;
+ letter-spacing:.4em;margin:0 0 24px;color:var(--gold);unicode-bidi:isolate}
+.cover-title{font-family:"Frank Ruhl Libre",serif;font-weight:600;font-size:32pt;
+ letter-spacing:.01em;margin:0 0 14px;color:#F7F1E4}
+.cover-rule{width:56px;height:2px;background:linear-gradient(to right,var(--gold),var(--purple));margin:22px 0}
+.cover-sub{font-family:"Heebo",sans-serif;font-weight:300;font-size:10.2pt;
+ letter-spacing:.06em;color:#c9bda5;max-width:320px;line-height:1.95}
+.cover-tags{position:absolute;bottom:60mm;display:flex;gap:10px}
+.cover-tag{border:1px solid var(--espresso-line);color:#a99a7d;font-family:"Heebo",sans-serif;
+ font-size:7.4pt;letter-spacing:.14em;padding:4px 12px;border-radius:1px}
+.cover-foot{position:absolute;bottom:20mm;font-family:"Heebo",sans-serif;font-size:7.4pt;
+ letter-spacing:.16em;color:#7c6f5a;unicode-bidi:isolate}
+
+/* ---------- SECTION DIVIDER (dark, bottom-anchored, ghost numeral) ---------- */
+.divider{min-height:257mm;display:flex;flex-direction:column;justify-content:flex-end;
+ position:relative;overflow:hidden}
+.divider-ghost{position:absolute;inset-inline-end:-6mm;bottom:8mm;font-family:"Frank Ruhl Libre",serif;
+ font-weight:700;font-size:230pt;line-height:1;color:var(--gold-pale);z-index:0;user-select:none;unicode-bidi:isolate}
+.divider-inner{position:relative;z-index:1;padding-bottom:8mm}
+.divider-eyebrow{display:flex;align-items:center;gap:12px;font-family:"Heebo",sans-serif;
+ font-size:8.2pt;letter-spacing:.16em;color:var(--gold);margin-bottom:16px}
+.divider-eyebrow .dash{width:30px;height:1px;background:var(--gold)}
+.divider-title{font-family:"Frank Ruhl Libre",serif;font-size:27pt;font-weight:600;
+ max-width:520px;line-height:1.45;margin:0 0 16px;color:#F7F1E4}
+.divider-sub{font-family:"Heebo",sans-serif;font-size:9.6pt;color:#b9ac93;
+ max-width:420px;line-height:1.9;margin-bottom:18px}
+.divider-endrule{width:36px;height:1px;background:var(--espresso-line)}
+
+/* ---------- SECTION HEADING on content pages ---------- */
+.eyebrow{font-family:"Heebo",sans-serif;font-size:8pt;letter-spacing:.15em;
+ color:var(--gold-deep);font-weight:700;margin-bottom:6px}
+h1.sec{font-family:"Frank Ruhl Libre",serif;font-size:20pt;font-weight:600;
+ line-height:1.3;margin:0 0 8px;break-after:avoid}
+.secrule{height:1px;background:linear-gradient(to right,var(--gold),transparent);margin:0 0 11px}
+h2.sub{display:flex;align-items:center;gap:10px;font-family:"Frank Ruhl Libre",serif;
+ font-size:13pt;font-weight:600;color:var(--ink);margin:15px 0 7px;break-after:avoid}
+h2.sub::before{content:"";width:20px;height:1px;background:var(--gold);flex:none}
+.body-copy{font-family:"Heebo",sans-serif;font-size:9.8pt;line-height:1.6;
+ color:#382c1f;margin:0 0 10px}
+strong{font-weight:700;color:var(--ink)}
+
+/* ---------- CARDS (two-up profile style) ---------- */
+.cardgrid{display:flex;gap:12px;margin:10px 0}
+.cardgrid.stack{flex-direction:column}
+.cardgrid.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cardgrid.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.cardgrid.grid3 .card{padding:13px 14px}
+.cardgrid.grid3 .card-title{font-size:11pt;margin:0 0 6px}
+.cardgrid.grid3 .card p{font-size:8.6pt;line-height:1.5}
+.card{flex:1;background:var(--cream2);border:1px solid var(--rule);border-top:3px solid var(--gold);
+ border-radius:2px;padding:12px 14px;break-inside:avoid-page;page-break-inside:avoid}
+.card-label{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.13em;
+ color:var(--gold-deep);margin-bottom:6px;font-weight:700}
+.card-title{font-family:"Frank Ruhl Libre",serif;font-size:12.5pt;font-weight:600;margin:0 0 6px}
+.card p{font-family:"Heebo",sans-serif;font-size:9.5pt;color:#4a3d2c;line-height:1.55;margin:0}
+
+/* ---------- KEY-INSIGHT / WARNING callouts ---------- */
+.callout{border-inline-start:3px solid var(--gold-deep);background:var(--cream2);
+ padding:10px 15px;margin:10px 0;font-family:"Heebo",sans-serif;font-size:9.3pt;
+ color:#3d3222;line-height:1.55;break-inside:avoid-page;page-break-inside:avoid}
+.callout b{color:var(--ink)}
+.callout.warn{border-inline-start-color:var(--warn-border);background:var(--warn-bg);color:#5c2c26}
+.callout.warn b{color:var(--warn-label)}
+.callout-label{font-style:italic;font-weight:700}
+
+/* ---------- STAT TILE ROW ---------- */
+.stats{display:flex;gap:10px;margin:10px 0;break-inside:avoid-page;page-break-inside:avoid}
+.stat{flex:1;background:var(--cream2);border:1px solid var(--rule);border-radius:2px;
+ padding:10px 8px;text-align:center;break-inside:avoid-page}
+.stat-num{font-family:"Frank Ruhl Libre",serif;font-size:16pt;font-weight:700;color:var(--gold-deep);unicode-bidi:isolate}
+.stat-cap{font-family:"Heebo",sans-serif;font-size:7.6pt;color:var(--muted);
+ margin-top:4px;line-height:1.35}
+
+/* ---------- PROMPT / REFLECTION BOX ---------- */
+.prompt{background:var(--cream2);border-radius:2px;padding:10px 15px;margin:9px 0;
+ border-inline-start:2px solid var(--gold);break-inside:avoid-page;page-break-inside:avoid}
+.prompt-label{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.13em;
+ color:var(--gold-deep);font-weight:700;margin-bottom:5px}
+.prompt-q{font-family:"Heebo",sans-serif;font-size:9.6pt;color:#382c1f;line-height:1.55}
+.fine{font-family:"Heebo",sans-serif;font-size:8.5pt;color:var(--muted);
+ line-height:1.5;border-inline-start:2px solid var(--rule);padding-inline-start:12px;margin:8px 0;
+ break-inside:avoid-page;page-break-inside:avoid}
+
+/* ---------- PROCESS DIAGRAM ---------- */
+.process{margin:12px 0}
+.pstep{display:flex;gap:16px;align-items:flex-start;padding:9px 0;
+ border-bottom:1px solid var(--rule);break-inside:avoid-page;page-break-inside:avoid}
+.pstep:last-child{border-bottom:none}
+.pnum{flex:none;width:28px;height:28px;border-radius:50%;background:var(--espresso);color:var(--gold);
+ font-family:"Frank Ruhl Libre",serif;font-weight:700;font-size:11.5pt;
+ display:flex;align-items:center;justify-content:center;unicode-bidi:isolate}
+.ptxt{font-family:"Heebo",sans-serif;font-size:9.5pt;color:#382c1f;line-height:1.55;padding-top:2px}
+.lead-line{font-family:"Frank Ruhl Libre",serif;font-weight:600;font-size:14pt;color:var(--gold-deep);margin:2px 0 10px;line-height:1.4}
+.site-line{font-family:"Heebo",sans-serif;font-size:8.6pt;letter-spacing:.12em;color:var(--gold-deep);margin-top:12px;text-align:center}
+
+/* ---------- FLOW (operating-model diagram) ---------- */
+.flow{display:flex;align-items:center;gap:8px;margin:22px 0 8px}
+.flow-stage{flex:1;text-align:center}
+.flow-eyebrow{font-family:"Heebo",sans-serif;font-size:7.6pt;letter-spacing:.13em;
+ color:var(--gold-deep);font-weight:700;margin-bottom:8px}
+.flow-card{background:var(--cream2);border:1px solid var(--rule);border-radius:2px;
+ padding:14px 8px;font-family:"Frank Ruhl Libre",serif;font-size:10.5pt;font-weight:600;color:var(--ink)}
+.flow-node{width:60px;height:60px;border-radius:50%;background:var(--espresso);color:var(--gold);
+ display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.flow-connector{flex:0 0 22px;height:1px;background:var(--gold);align-self:center;margin-top:20px}
+.flow-loop{margin-top:10px;font-family:"Heebo",sans-serif;font-size:8.6pt;color:var(--muted);
+ text-align:center;line-height:1.5;padding:0 20px}
+
+/* ---------- CONTRAST ROW (not-vs-is) ---------- */
+.contrast{border-radius:2px;padding:9px 14px;margin:7px 0;font-family:"Heebo",sans-serif;
+ font-size:9.3pt;line-height:1.5;break-inside:avoid-page;page-break-inside:avoid}
+.contrast.dim{background:var(--cream3);color:var(--muted);border:1px dashed var(--rule)}
+.contrast.affirm{background:var(--cream2);border-inline-start:3px solid var(--gold);
+ color:var(--gold-deep);font-weight:700;padding:11px 14px;font-size:9.8pt}
+
+/* ---------- PERMISSION PAGE (quiet, typographic) ---------- */
+.permission-quote{font-family:"Frank Ruhl Libre",serif;font-style:italic;font-weight:600;
+ font-size:19pt;text-align:center;line-height:1.55;color:var(--ink);max-width:520px;margin:34px auto 24px}
+.permission-dots{display:flex;justify-content:center;gap:11px;margin:8px 0 10px}
+.permission-dot{width:10px;height:10px;border-radius:50%;background:var(--gold)}
+.permission-dot.you{background:transparent;border:2px solid var(--purple)}
+.permission-cap{text-align:center;font-family:"Heebo",sans-serif;font-size:7.8pt;
+ color:var(--muted);letter-spacing:.08em;margin-bottom:28px}
+
+/* ---------- HORIZON (sustainability rings) ---------- */
+.horizon-wrap{position:relative;min-height:96mm;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.horizon-svg{position:absolute;inset-inline-end:-10mm;top:50%;transform:translateY(-50%);z-index:0;opacity:.9}
+.horizon-cap{position:relative;z-index:1;text-align:center;font-family:"Heebo",sans-serif;
+ font-size:9.6pt;color:var(--muted);max-width:360px;line-height:1.9}
+
+/* ---------- GENESIS LENSES ---------- */
+.lenses{display:flex;gap:10px;margin:20px 0 4px}
+.lens{flex:1;border-top:3px solid var(--gold);background:var(--cream2);padding:12px 8px;text-align:center}
+.lens.c2{border-top-color:var(--gold-deep)}
+.lens.c3{border-top-color:var(--muted)}
+.lens.c4{border-top-color:var(--purple)}
+.lens-icon{margin:0 auto 8px;width:26px;height:26px}
+.lens-label{font-family:"Heebo",sans-serif;font-size:8pt;font-weight:700;color:var(--ink);line-height:1.4}
+.lens-converge{display:flex;flex-direction:column;align-items:center;margin:14px 0 6px}
+.lens-line{width:1px;height:20px;background:var(--gold)}
+.lens-node{width:52px;height:52px;border-radius:50%;background:var(--espresso);color:var(--gold);
+ display:flex;align-items:center;justify-content:center;font-family:"Frank Ruhl Libre",serif;
+ font-size:8.6pt;font-weight:700;text-align:center;line-height:1.15}
+
+/* ---------- MICRO TABLE (break-even defaults) ---------- */
+table.micro{width:100%;border-collapse:collapse;margin:8px 0;font-family:"Heebo",sans-serif;
+ font-size:9.2pt;break-inside:avoid-page;page-break-inside:avoid}
+table.micro th{text-align:start;font-size:7.6pt;letter-spacing:.1em;color:var(--gold-deep);
+ font-weight:700;padding:0 0 8px;border-bottom:1px solid var(--rule)}
+table.micro td{padding:7px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:#382c1f}
+table.micro td:first-child{color:var(--ink);font-weight:600;width:38%}
+
+/* ---------- DATA TABLE (illustrative forecast example) ---------- */
+table.data{width:100%;border-collapse:collapse;margin:3px 0;font-family:"Heebo",sans-serif;
+ font-size:8.2pt;break-inside:avoid-page;page-break-inside:avoid}
+table.data th{text-align:center;font-size:7pt;letter-spacing:.05em;color:var(--gold-deep);
+ font-weight:700;padding:0 5px 6px;border-bottom:1px solid var(--rule)}
+table.data td{padding:6px 5px;border-bottom:1px solid var(--rule);text-align:center;color:#382c1f}
+table.data td:first-child{color:var(--ink);font-weight:600}
+table.data th:last-child,table.data td:last-child{text-align:start}
+.tbl-label{font-family:"Heebo",sans-serif;font-size:8pt;letter-spacing:.08em;
+ color:var(--gold-deep);font-weight:700;margin:6px 0 1px}
+
+/* ---------- FORECAST TABLE (months as rows, metrics as columns) ----------
+   Breaks out of the normal text margins (20mm page padding) into most of
+   that margin on both sides, leaving only ~2.7mm from the true page edge, to
+   gain extra width so column headers never need to wrap. Column widths
+   (see _FORECAST_COL_WIDTHS below) are sized per-column from measured
+   header/data text widths, not equal tiers, so every header fits on one
+   line without overflowing into its neighbor. */
+table.fcast{width:calc(100% + 131px);margin:6px -65.5px;table-layout:fixed;
+ border-collapse:collapse;font-family:"Heebo",sans-serif;font-size:7.6pt;
+ break-inside:avoid-page;page-break-inside:avoid}
+table.fcast th{text-align:center;font-size:7.2pt;letter-spacing:.01em;color:var(--gold-deep);
+ font-weight:700;padding:3px 2px 4px;border-bottom:1px solid var(--rule);white-space:nowrap}
+table.fcast td{padding:3.6px 2px;border-bottom:1px solid var(--rule);text-align:center;
+ color:#382c1f;white-space:nowrap}
+table.fcast td:first-child{color:var(--ink);font-weight:600}
+table.fcast th.sec-mkt,table.fcast td.sec-mkt{background:rgba(169,130,79,.07)}
+table.fcast th.sec-com,table.fcast td.sec-com{background:rgba(140,106,61,.07)}
+table.fcast th.sec-ret,table.fcast td.sec-ret{background:rgba(125,111,92,.08)}
+table.fcast th.sec-fin,table.fcast td.sec-fin{background:rgba(91,41,134,.055)}
+table.fcast th.sec-mkt{border-top:3px solid var(--gold)}
+table.fcast th.sec-com{border-top:3px solid var(--gold-deep)}
+table.fcast th.sec-ret{border-top:3px solid var(--muted)}
+table.fcast th.sec-fin{border-top:3px solid var(--purple)}
+.tbl-legend{display:flex;gap:16px;margin:2px 0 6px;font-family:"Heebo",sans-serif;
+ font-size:7.4pt;color:var(--muted)}
+.tbl-legend .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-inline-end:5px}
+
+/* ---------- INLINE FILL-IN FIELDS ----------
+   Content-architecture pass (v3.0): fields used to live only in one
+   consolidated "Intake Form" chapter at the end, laid out under a
+   numbered .igroup header (a circle badge + group title) with the
+   field rows indented 38px to sit clear of that badge. Fields now sit
+   inline, right after the explanatory paragraph they belong to, inside
+   a chapter/section that already carries its own heading — so the
+   .igroup wrapper is gone and .ifields starts flush with the body copy
+   around it (margin-inline-start:0) rather than indented under a badge
+   that no longer exists. Same dotted-line field-row look throughout;
+   see md_guide_parser.py's render_flist for the markdown convention
+   (`- [ ] label`) that produces this block wherever it's used. */
+.ifields{margin-inline-start:0;font-family:"Heebo",sans-serif;font-size:9.3pt;
+ color:#382c1f;line-height:1.7;margin-top:3px;margin-bottom:7px}
+.ifields .f{display:flex;align-items:baseline;gap:8px;border-bottom:1px dotted var(--rule);
+ padding:3px 0}
+.ifields .f .flabel{flex:1 1 auto;min-width:0;color:#4a3d2c}
+.ifields .f .fline{flex:0 0 70px;border-bottom:1px solid var(--rule);min-height:13px}
+
+/* ---------- CLOSING (sign-off style) ---------- */
+.closing{min-height:257mm;display:flex;flex-direction:column;justify-content:flex-end;
+ position:relative;overflow:hidden}
+.closing-ghost{position:absolute;inset-inline-end:0mm;bottom:-8mm;font-family:"Frank Ruhl Libre",serif;
+ font-weight:700;font-size:210pt;line-height:1;color:var(--gold-pale);z-index:0;user-select:none}
+.closing-inner{position:relative;z-index:1;padding-bottom:8mm}
+.closing-eyebrow{display:flex;align-items:center;gap:12px;font-family:"Heebo",sans-serif;
+ font-size:8.2pt;letter-spacing:.16em;color:var(--gold);margin-bottom:16px}
+.closing-eyebrow .dash{width:30px;height:1px;background:var(--gold)}
+.closing-title{font-family:"Frank Ruhl Libre",serif;font-size:25pt;font-weight:600;
+ line-height:1.4;margin:0 0 16px;color:#F7F1E4}
+.closing p{font-family:"Heebo",sans-serif;font-size:9.8pt;color:#c9bda5;line-height:1.95;
+ max-width:480px;margin:0 0 22px}
+.closing-brand{display:flex;align-items:center;gap:10px;margin-top:10px}
+.closing-brand img{height:26px;filter:brightness(0) invert(1);opacity:.9}
+.closing-brand .tx{font-family:"Heebo",sans-serif}
+.closing-brand .tx .n{font-weight:700;letter-spacing:.14em;font-size:9.5pt;color:#F7F1E4}
+.closing-brand .tx .t{font-style:italic;font-size:8.2pt;color:#a99a7d;margin-top:2px}
+
+.eyebrow,.divider-eyebrow,.closing-eyebrow,.flow-eyebrow{text-transform:uppercase}
+.pagehead{letter-spacing:.12em}
+.pagehead .brand,.pagehead .org{white-space:nowrap;flex:none}
+.pagehead .crumb{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ text-align:center;letter-spacing:.05em;margin:0 14px}
+.cover-sub{max-width:380px}
+.dense .body-copy{font-size:9.4pt;line-height:1.5;margin-bottom:8px}
+.dense .callout{font-size:9pt;line-height:1.48;padding:8px 14px;margin:8px 0}
+@page{size:A4;margin:0}
+@media print{
+ body{background:#fff}
+ .sheet{max-width:none}
+ .card,.prompt,.callout,.stat,.stats,.pstep,.fine,table.micro{break-inside:avoid}
+ h1.sec,h2.sub,.divider-title,.eyebrow{break-after:avoid}
+}
+"""
+
+def pagehead(num, title, dark=False):
+    cls = "pagehead on-dark" if dark else "pagehead"
+    return (f'<div class="{cls}"><span class="brand"><img src="{LOGO_MARK}">'
+            f'<span class="lat">LOS GARDIOS HOLDINGS</span> · Client Guide</span>'
+            + (f'<span class="crumb"><span class="num">{num}</span> · {title}</span>' if num else
+               f'<span class="crumb">{title}</span>') +
+            f'<span class="org">Los Gardios Ltd.</span></div>')
+
+def pagefoot():
+    return '<div class="pagefoot"><span>CONFIDENTIAL · Part of the engagement documents</span><span>© Los Gardios Ltd.</span></div>'
+
+# ------------------------------------------------------------------
+# Generic page templates. content_page() is the shared shell every page
+# (bespoke or generic) is built on: pagehead + eyebrow + h1.sec + secrule
+# + arbitrary body HTML + pagefoot. generic_section_page() is the
+# fallback described in the module docstring for a chapter/section that
+# has no bespoke layout of its own yet — it renders every block of a
+# parsed section, in order, with nothing hand-authored except the short
+# eyebrow caption. It is genuinely used below (not just wired up and
+# left idle), for every section in this guide that doesn't need a
+# cardgrid/diagram/table/stat-tile of its own.
+# ------------------------------------------------------------------
+
+def content_page(num, breadcrumb_title, eyebrow, h1, body_html, dark=False):
+    return f'''<div class="page">
+{pagehead(num, breadcrumb_title, dark=dark)}
+<div class="eyebrow">{eyebrow}</div>
+<h1 class="sec">{h1}</h1>
+<div class="secrule"></div>
+{body_html}
+{pagefoot()}
+</div>'''
+
+
+def generic_section_page(num, section, eyebrow, breadcrumb_title=None):
+    """The fallback template from the recommended architecture: pagehead
+    + h1.sec (the section's own title) + secrule + every block of the
+    section rendered in source order via the generic renderer. Used for
+    every sub-page below that has no bespoke visual, and ready as-is for
+    chapters added after this fix lands."""
+    body = render_blocks(section.blocks)
+    return content_page(num, breadcrumb_title or section.title, eyebrow, section.title, body)
+
+
+def divider(num, chapter, sub, ghost=None):
+    """Shared shell for every chapter's dark section-divider page."""
+    return f'''<div class="page dark divider">
+  <div class="divider-ghost">{ghost if ghost is not None else num}</div>
+  <div class="divider-inner">
+    <div class="divider-eyebrow"><span class="dash"></span>Chapter {num}</div>
+    <div class="divider-title">{chapter.title}</div>
+    <div class="divider-sub">{sub}</div>
+    <div class="divider-endrule"></div>
+  </div>
+</div>'''
+
+
+PAGES = []
+
+# ==================================================================
+# COVER
+# ==================================================================
+# cover-title is the document's own title (parsed), minus the " — Los
+# Gardios" tail; the version tag is the parsed version line — this is
+# the "closes a related, smaller version-drift risk" fix: there is no
+# second, hand-typed copy of the version/date anywhere in this script.
+_cover_title = G.title.split('—')[0].strip()
+PAGES.append(f'''<div class="page dark cover">
+  <img src="{LOGO_MARK}" class="cover-mark">
+  <div class="cover-eyebrow">L O S &nbsp; G A R D I O S &nbsp; H O L D I N G S</div>
+  <div class="cover-title">{_cover_title}</div>
+  <div class="cover-rule"></div>
+  <div class="cover-sub">Who we are · How we work · What stands behind the work<br>Reading before we set out together</div>
+  <div class="cover-tags"><span class="cover-tag">CONFIDENTIAL</span><span class="cover-tag">Version {G.version} · {G.updated_date}</span></div>
+  <div class="cover-foot">CONFIDENTIAL · LOS GARDIOS HOLDINGS</div>
+</div>''')
+
+# ==================================================================
+# OPENING (unnumbered) — who we are, how we work, the journey. Sits
+# between the cover and chapter 01 and deliberately takes no chapter
+# number, so chapters 1–10 (and the Agreement's citations of chapters
+# 1 and 2) keep their numbers.
+# ==================================================================
+_intro = G.chapter("Introduction")
+
+# P1 — Los Gardios Holdings: tagline, intro, the four groups as cards
+_sec_hold = _intro.section("Los Gardios Holdings")
+_hb = _sec_hold.blocks  # [tagline, intro, table(groups), experts para, site line]
+_group_cards = "".join(
+    f'<div class="card"><div class="card-title">{inline_to_html(r[0])}</div><p>{inline_to_html(r[1])}</p></div>'
+    for r in _hb[2]["rows"])
+PAGES.append(content_page(None, "Introduction · Who We Are", "Who We Are", _sec_hold.title, "\n".join([
+    f'<p class="lead-line">{inline_to_html(_hb[0]["lead"])}</p>',
+    render_block(_hb[1]),
+    f'<div class="cardgrid grid2">{_group_cards}</div>',
+    render_block(_hb[3]),
+    f'<div class="site-line">{_hb[4]["html"]}</div>',
+])))
+
+# P2 — every client gets their own work model
+_sec_model0 = _intro.section("Every Client — Their Own Work Model")
+PAGES.append(content_page(None, "Introduction · How We Work", "How We Work", _sec_model0.title,
+                          render_blocks(_sec_model0.blocks)))
+
+# P3 — the journey, step by step (numbered process component)
+_sec_journey = _intro.section("Your Journey, Step by Step")
+_jb = _sec_journey.blocks  # [intro, olist(steps), italic fine-print]
+_jsteps = "".join(
+    f'<div class="pstep"><div class="pnum">{i}</div><div class="ptxt">{item}</div></div>'
+    for i, item in enumerate(_jb[1]["items"], start=1))
+PAGES.append(content_page(None, "Introduction · The Process", "The Process", _sec_journey.title, "\n".join([
+    render_block(_jb[0]),
+    f'<div class="process">{_jsteps}</div>',
+    render_block(_jb[2]),
+])))
+
+# ==================================================================
+# DIVIDER 01 — How Los Gardios Works (identity, operating mechanics,
+# who-decides-what, and the org's protected assets). Chapter number is
+# by the exact heading "Foundations of the Cost of Protecting the Organization's Assets" — see module
+# docstring.
+# ==================================================================
+_ch1 = G.chapter("1")
+PAGES.append(divider("01", _ch1,
+    "The guiding principle, who decides what, and which assets and systems stand behind the work."))
+
+# ------------------------------------------------------------------
+# 1.2 — The client-controlled principle + who-decides-what
+# ------------------------------------------------------------------
+_sec_principle = _ch1.section("The Guiding Principle: The Client Sets the Framework")
+_sec_control = _ch1.section("Who Decides What — the Client and the Organization")
+PAGES.append(content_page("01", _sec_principle.title, "Operating principle", _sec_principle.title, "\n".join([
+    render_blocks(_sec_principle.blocks),
+    f'<h2 class="sub">{_sec_control.title}</h2>',
+    render_blocks(_sec_control.blocks),
+])))
+
+# ------------------------------------------------------------------
+# 1.3 — Organization's assets (table -> cardgrid)
+# ------------------------------------------------------------------
+def cardgrid_from_table(table_block, grid="grid2"):
+    cards = []
+    for row in table_block["rows"]:
+        label, body = row[0], row[1]
+        cards.append(f'<div class="card"><div class="card-label">{inline_to_html(label)}</div><p>{inline_to_html(body)}</p></div>')
+    return f'<div class="cardgrid {grid}">' + "".join(cards) + '</div>'
+
+_sec_assets = _ch1.section("The Organization's Assets and the Investment Behind Them")
+_assets_blocks = _sec_assets.blocks  # [para(intro), para(list-lead-in), table, para(operative rule)]
+_sec_cost = _ch1.section("Foundations of the Cost of Protecting the Organization's Assets")
+_assets_body = "\n".join([
+    render_block(_assets_blocks[0]),
+    render_block(_assets_blocks[1]),
+    cardgrid_from_table(_assets_blocks[2]),
+    render_block(_assets_blocks[3]),
+    f'<h2 class="sub">{_sec_cost.title}</h2>',
+    render_blocks(_sec_cost.blocks),
+])
+PAGES.append(content_page("01", _sec_assets.title, "What stands behind the work", _sec_assets.title, _assets_body))
+
+# ------------------------------------------------------------------
+# 1.4 — Cost basis behind the protection floors (Phase 2 compression:
+# merged onto 1.3's page above as a sub-heading instead of its own
+# page — its remaining content was the worked example only, the
+# generic abstract restatement was cut as a duplicate of 1.3's own
+# intro paragraph. NOT deleted: AGREEMENT_SHORT_HE.md §11(a) cites this
+# exact heading text within chapter 1 (see module docstring) — the
+# heading and its section() lookup both still exist, just rendered on
+# 1.3's page rather than via a standalone generic_section_page call.
+# ------------------------------------------------------------------
+
+# ==================================================================
+# DIVIDER 02 — Engagement Models. Chapter number is load-bearing:
+# A/B/C/0 definitions.
+# ==================================================================
+_ch2 = G.chapter("2")
+PAGES.append(divider("02", _ch2,
+    "The four tracks the Agreement supports, and what happens if you end early on your own initiative."))
+
+# ------------------------------------------------------------------
+# 2.1 — The four tracks. Each track is its own md paragraph, whose
+# title are derived from that lead (never retyped), the card body from
+# the rest of that same paragraph.
+# ------------------------------------------------------------------
+_TRACK_LEAD_RE = re.compile(r'^Track\s+(\S+)\s*—\s*(.+?)\.?$')
+
+def _track_card(block):
+    m = _TRACK_LEAD_RE.match(block["lead"])
+    badge, title = m.group(1), m.group(2)
+    _, rest_html = split_lead(block)
+    return (f'<div class="card"><div class="card-label">'
+            f'<div class="igroup-num" style="width:32px;height:32px;font-size:12pt;display:inline-flex;vertical-align:middle;margin-inline-end:8px">{badge}</div>'
+            f'Track {badge}</div><div class="card-title">{title}</div><p>{rest_html}</p></div>')
+
+_sec_tracks = _ch2.section("The Four Tracks")
+_tb = _sec_tracks.blocks  # [track0, trackA, trackB, trackC, mechanism-fine, unsure-callout]
+PAGES.append(content_page("02", _sec_tracks.title, "Supported commercial frameworks", _sec_tracks.title, "\n".join([
+    render_block(_ch2.intro_blocks()[0]),
+    '<div class="cardgrid grid2">' + "".join(_track_card(b) for b in _tb[0:4]) + '</div>',
+    f'<div class="fine">{_tb[4]["html"]}</div>',
+    render_block(_tb[5]),
+])))
+
+# ------------------------------------------------------------------
+# 2.2 — Exit schedule (the flexibility/staged-architecture and shared-
+# growth sections that used to share this page moved to chapter 8,
+# ------------------------------------------------------------------
+PAGES.append(generic_section_page("02", _ch2.section("If You End Early, on Your Own Initiative — the Exit Schedule"), "If the engagement ends early"))
+
+# ==================================================================
+# DIVIDER 03 — Budget / investment / timeline
+# ==================================================================
+_ch3 = G.chapter("3")
+PAGES.append(divider("03", _ch3,
+    "How we think about budget, why we ask about it, and how it translates into a real plan."))
+
+def first_sentence_split(raw):
+    """A bespoke page's h1.sec pull-quote headline: the section's own
+    first sentence (split on the first '. '), never a separately typed
+    headline. Returns (headline_without_period, rest_of_paragraph_html)."""
+    parts = re.split(r'(?<=\.)\s+', raw, maxsplit=1)
+    head = parts[0].rstrip('.')
+    rest = parts[1] if len(parts) > 1 else ''
+    return inline_to_html(head), inline_to_html(rest)
+
+# NOTE: this file used to also define qmark_lines()/split_ask() here —
+# paragraph into a .prompt reflection box at render time. Content-
+# architecture pass v3.1 rewrote every section that needed them so the
+# .md itself now writes those questions as real field bullets
+# (`- [ ] ...`, see md_guide_parser.py's render_flist) instead of prose
+# for a page-time splitter to pick apart — so both helpers were removed
+# as dead code rather than kept unused.
+
+# ------------------------------------------------------------------
+# 3.1 — Opening hook: the section's own first sentence as the page's
+# headline (see first_sentence_split), the rest of that paragraph plus
+# the section's remaining two paragraphs as body copy.
+# ------------------------------------------------------------------
+_sec_why = _ch3.section("Why We Ask About This")
+_headline, _rest0 = first_sentence_split(_sec_why.blocks[0]["text"])
+PAGES.append(content_page("03", "Why We Ask", "Opening", _headline, "\n".join([
+    f'<p class="body-copy">{_rest0}</p>',
+    render_block(_sec_why.blocks[1]),
+    render_block(_sec_why.blocks[2]),
+])))
+
+# ------------------------------------------------------------------
+# scaffolding (they label the graphic, they aren't sentences of prose);
+# every paragraph of actual prose on this page is the section's own two
+# blocks, rendered in full.
+# ------------------------------------------------------------------
+_flow_icon = '''<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
+<circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.3" y1="15.3" x2="21" y2="21"/></svg>'''
+_sec_model = _ch3.section("Our Model: You Set the Framework")
+PAGES.append(content_page("03", "Our Model", "Our approach", _sec_model.title, "\n".join([
+    f'''<div class="flow">
+  <div class="flow-stage"><div class="flow-eyebrow">Step 1</div><div class="flow-card">You<br><span style="font-weight:400;font-size:8.6pt;color:var(--muted)">Budget · framework · vision</span></div></div>
+  <div class="flow-connector"></div>
+  <div class="flow-stage"><div class="flow-eyebrow">Step 2</div><div class="flow-node">{_flow_icon}</div><div style="font-family:'Heebo',sans-serif;font-size:9pt;font-weight:700">We examine</div></div>
+  <div class="flow-connector"></div>
+  <div class="flow-stage"><div class="flow-eyebrow">Step 3</div><div class="flow-card">Together<br><span style="font-weight:400;font-size:8.6pt;color:var(--muted)">Plan + Proposal</span></div></div>
+</div>''',
+    render_block(_sec_model.blocks[0]),
+    f'<div class="flow-loop">{_sec_model.blocks[1]["html"]}</div>',
+])))
+
+# ------------------------------------------------------------------
+# 3.3 — Trust + permission (pull-quote). The oversized quote is this
+# section's own leading bold sentence (split_lead), never retyped.
+# ------------------------------------------------------------------
+_sec_trust = _ch3.section("Our Trust Starts with Candor")
+_sec_before = _ch3.section("Before We Continue — Good to Know")
+_quote_lead, _quote_rest = split_lead(_sec_trust.blocks[0])
+# "Before We Continue — Good to Know" (a short before-you-continue caveat) is
+# folded onto this page as fine print rather than given its own
+# near-empty page — a page-grouping choice, its own text unchanged.
+PAGES.append(f'''<div class="page">
+{pagehead("03", _sec_trust.title)}
+<div class="permission-quote">{_quote_lead}</div>
+<div class="permission-dots">
+  <span class="permission-dot"></span><span class="permission-dot"></span><span class="permission-dot you"></span><span class="permission-dot"></span><span class="permission-dot"></span>
+</div>
+<div class="permission-cap">The same attention. At every scale.</div>
+<p class="body-copy">{_quote_rest}</p>
+{render_block(_sec_trust.blocks[1])}
+<div class="fine">{_sec_before.blocks[0]["html"]}</div>
+{pagefoot()}
+</div>''')
+
+# ------------------------------------------------------------------
+# 3.4 — Two paths. The two bullets become the two stacked cards; card
+# prose), card body is each bullet's own text.
+# ------------------------------------------------------------------
+_PATH_ORDINALS = ["1", "2", "3", "4"]
+_sec_paths = _ch3.section("Two Possible Paths")
+_paths_ulist = _sec_paths.blocks[1]
+_path_cards = []
+for i, item_html in enumerate(_paths_ulist["items"]):
+    m = re.match(r'^<strong>(.+?)</strong>\s*(.*)$', item_html)
+    title = m.group(1) if m else item_html
+    body = m.group(2) if m else ''
+    _path_cards.append(
+        f'<div class="card"><div class="card-label">Path {_PATH_ORDINALS[i]}</div>'
+        f'<div class="card-title">{title}</div><p>{body}</p></div>'
+    )
+_sec_goals = _ch3.section("Your Goals and Expectations")
+_paths_body = "\n".join([
+    render_block(_sec_paths.blocks[0]),
+    '<div class="cardgrid stack">' + "".join(_path_cards) + '</div>',
+    render_blocks(_sec_paths.blocks[2:]),
+    f'<h2 class="sub">{_sec_goals.title}</h2>',
+    render_blocks(_sec_goals.blocks),
+])
+PAGES.append(content_page("03", _sec_paths.title, "Choice", _sec_paths.title, _paths_body))
+
+# ------------------------------------------------------------------
+# in the .md renders via the generic flist treatment (dotted-line field
+# rows) — previously a bespoke prompt-label/prompt-q box; upgraded to
+# actual fill-in rows now that this page is also where the reader
+# answers, not just where they read the question (build report point 6
+# instruction).
+# ------------------------------------------------------------------
+_sec_invest = _ch3.section("Your Investment Framework")
+_ib = _sec_invest.blocks  # [intro, reminder-para, terms-para, track0-fine]
+_invest_body = "\n".join([
+    render_block(_ib[0]),
+    render_block(_ib[1]),
+    '<div class="eyebrow" style="margin-top:8px">Tracks A/B/C — what is worth knowing now</div>',
+    '<div class="stats" style="margin:6px 0">'
+    '<div class="stat"><div class="stat-num">3</div><div class="stat-cap">months · minimum budget commitment</div></div>'
+    '<div class="stat"><div class="stat-num">30</div><div class="stat-cap">days · advance notice to reduce the budget</div></div>'
+    '</div>',
+    render_block(_ib[2]),
+    # Compact .fine treatment (not .callout): this page is already dense
+    # (field rows + stat tiles), and .callout's padding/border-on-all-
+    # sides pushed the page's pagefoot onto a near-empty extra page even
+    # after tightening its spacing. This note is a scoping/definitional
+    # aside (which chapters don't apply to you), which is what .fine is
+    # for anyway; its lighter treatment (border-inline-start only, no
+    # fill) reclaims the remaining vertical space. Matches the generic
+    f'<div class="fine" style="margin:4px 0 0">{_ib[3]["html"]}</div>',
+])
+PAGES.append(content_page("03", _sec_invest.title, "The key input", _sec_invest.title, _invest_body))
+
+# ------------------------------------------------------------------
+# 3.7/3.8 — Timeline + financial boundaries, merged onto one page
+# (ground-truth page grouping): the timeline section's closing line
+# section's own closing paragraph covers strategic boundaries too, so
+# both sit together under the "Financial Boundaries" title.
+# ------------------------------------------------------------------
+_sec_timeline = _ch3.section("Your Timeline")
+_sec_bounds = _ch3.section("Financial Boundaries")
+PAGES.append(content_page("03", _sec_bounds.title, "Planning · protecting you", _sec_bounds.title, "\n".join([
+    render_blocks(_sec_timeline.blocks),
+    f'<h2 class="sub">{_sec_bounds.title}</h2>',
+    render_blocks(_sec_bounds.blocks),
+    '<div class="eyebrow" style="margin-top:14px">Defaults, if no cap is set</div>',
+    '<div class="stats">'
+    '<div class="stat"><div class="stat-num">30</div><div class="stat-cap">days · Stop-Loss measurement period</div></div>'
+    '<div class="stat"><div class="stat-num">10%</div><div class="stat-cap">permitted overrun of the monthly budget</div></div>'
+    '</div>',
+])))
+
+# ==================================================================
+# DIVIDER 04 — Genesis. Previously mentioned only as the tail of the
+# old chapter 3/4 split, with no divider of its own — this fixes that
+# (build report point 2).
+# ==================================================================
+_ch4 = G.chapter("4")
+PAGES.append(divider("04", _ch4,
+    "What stands behind Genesis Research, what you receive at the end of it, and what happens if you choose to implement it yourselves."))
+
+# ------------------------------------------------------------------
+# 4.1 — Genesis specialist lenses
+# ------------------------------------------------------------------
+_icon_a = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><rect x="4" y="12" width="3" height="7"/><rect x="10.5" y="8" width="3" height="11"/><rect x="17" y="4" width="3" height="15"/></svg>'
+_icon_b = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--gold-deep)" stroke-width="1.5"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>'
+_icon_c = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--muted)" stroke-width="1.5"><circle cx="12" cy="9" r="4"/><path d="M5 20c1-3.5 4-5 7-5s6 1.5 7 5"/></svg>'
+_icon_d = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--purple)" stroke-width="1.5"><path d="M4 19l4-9 4 5 4-8 4 12"/></svg>'
+_sec_lenses = _ch4.section("What Stands Behind Genesis Research")
+PAGES.append(f'''<div class="page">
+{pagehead("04", _sec_lenses.title)}
+<div class="eyebrow">Not a single point of view</div>
+<h1 class="sec">{_sec_lenses.title}</h1>
+<div class="secrule"></div>
+{render_block(_sec_lenses.blocks[0])}
+<div class="lenses">
+  <div class="lens"><div class="lens-icon">{_icon_a}</div><div class="lens-label">Analytics<br>&amp; Research</div></div>
+  <div class="lens c2"><div class="lens-icon">{_icon_b}</div><div class="lens-label">Marketing<br>&amp; Advertising</div></div>
+  <div class="lens c3"><div class="lens-icon">{_icon_c}</div><div class="lens-label">Creative &amp; Consumer Psychology</div></div>
+  <div class="lens c4"><div class="lens-icon">{_icon_d}</div><div class="lens-label">Strategy &amp; Business Development</div></div>
+</div>
+<div class="lens-converge"><div class="lens-line"></div><div class="lens-node">The Plan</div></div>
+<p class="body-copy" style="text-align:center;color:var(--muted);font-size:9pt">One business, marketing and financial plan — not a single, generic view of your business</p>
+{pagefoot()}
+</div>''')
+
+# ------------------------------------------------------------------
+# 4.2 — Genesis output rights
+# ------------------------------------------------------------------
+_sec_rights = _ch4.section("What You Receive, and What It Does Not Include")
+PAGES.append(content_page("04", _sec_rights.title, "Full transparency", _sec_rights.title, render_blocks(_sec_rights.blocks)))
+
+# ==================================================================
+# DIVIDER 05 — Project Infrastructure (new chapter — build report
+# point 4). Source-backed: the specialist-mix fragment already in the
+# old chapter 1, plus Atlas Network, plus a short synthesis paragraph
+# on the org's operational (not just advisory) capability once a
+# project moves past Genesis into execution.
+# ==================================================================
+_ch5 = G.chapter("5")
+PAGES.append(divider("05", _ch5,
+    "What stands behind the project's actual execution, beyond the research stage — and how Atlas Network extends its operational reach."))
+
+_sec_exec = _ch5.section("What Stands Behind Actual Execution")
+_sec_atlas = _ch5.section("Atlas Network")
+PAGES.append(content_page("05", _sec_exec.title, "From advice to execution", _sec_exec.title, "\n".join([
+    render_blocks(_sec_exec.blocks),
+    f'<h2 class="sub">{_sec_atlas.title}</h2>',
+    render_blocks(_sec_atlas.blocks),
+])))
+
+# ==================================================================
+# DIVIDER 06 — Human Capital & Proprietary Technology (new chapter —
+# build report point 4: separates WHAT the org's people/tech are from
+# WHY protecting them costs what it costs, which chapter 1 covers).
+# ==================================================================
+_ch6 = G.chapter("6")
+PAGES.append(divider("06", _ch6,
+    "Who actually runs your project, and what technology infrastructure — Neuron — stands behind the team."))
+
+_sec_hc = _ch6.section("Human Capital")
+_sec_tech = _ch6.section("Proprietary Technology and Internal Systems")
+PAGES.append(content_page("06", _sec_hc.title, "The network behind the team", _sec_hc.title, "\n".join([
+    render_blocks(_sec_hc.blocks),
+    f'<h2 class="sub">{_sec_tech.title}</h2>',
+    render_blocks(_sec_tech.blocks),
+])))
+PAGES.append(generic_section_page("06", _ch6.section("Data, Meetings and Privacy — in Brief"), "In brief"))
+
+# ==================================================================
+# DIVIDER 07 — Break-Even (its own chapter now — build report point 6:
+# previously folded into the old budget chapter, now clearly separated
+# from both the client's investment frame (chapter 3) and growth modes
+# (chapter 8)).
+# ==================================================================
+_ch7 = G.chapter("7")
+PAGES.append(divider("07", _ch7,
+    "Why our default is to operate at break-even, and what that means in practice — a planning tool, not a promise of profit."))
+
+# ------------------------------------------------------------------
+# 7.1 — Sustainability principle (horizon rings)
+# ------------------------------------------------------------------
+_rings = []
+_radii = [14, 24, 35, 47, 60]
+for i, r in enumerate(_radii):
+    t = i / (len(_radii) - 1)
+    # gold -> purple stroke gradient across rings
+    color = f"rgb({int(169+(91-169)*t)},{int(130+(41-130)*t)},{int(79+(134-79)*t)})"
+    _rings.append(f'<circle cx="70" cy="70" r="{r}" fill="none" stroke="{color}" stroke-opacity="{0.55-0.07*i:.2f}" stroke-width="1"/>')
+_horizon_svg = f'<svg class="horizon-svg" width="140" height="140" viewBox="0 0 140 140">{"".join(_rings)}<circle cx="70" cy="70" r="4" fill="var(--gold)"/></svg>'
+_sec_sustain = _ch7.section("The Principle That Guides Us: Not Spending It All")
+PAGES.append(content_page("07", "The Principle That Guides Us", "A transparent position", "Not Spending It All", "\n".join([
+    f'<div class="horizon-wrap">{_horizon_svg}<div class="horizon-cap">{_sec_sustain.blocks[0]["html"]}</div></div>',
+    render_block(_sec_sustain.blocks[1]),
+])))
+
+# ------------------------------------------------------------------
+# (gross margin, AOV) right after the two-inputs table, and the floor
+# note gained its own field group (alternate Break-Even definition,
+# extra profitability targets) — both used to live only in the
+# end-of-document Intake Form. Rendered generically around the one
+# genuinely bespoke element on this page (the table, still via
+# render_table so its column count picks the right micro/data class);
+# found positionally rather than by a fixed index so this page doesn't
+# need updating again if a future edit adds or removes a field group.
+# ------------------------------------------------------------------
+_sec_breakeven = _ch7.section("The Break-Even Point — What It Is")
+_beb = _sec_breakeven.blocks
+_be_table_i = next(i for i, b in enumerate(_beb) if b["type"] == "table")
+_be_body = "\n".join([
+    render_blocks(_beb[:_be_table_i]),
+    render_table(_beb[_be_table_i]),
+    render_blocks(_beb[_be_table_i + 1:]),
+])
+PAGES.append(content_page("07", "The Break-Even Point", "A planning tool, not a promise", "The Break-Even Point", _be_body))
+
+# ------------------------------------------------------------------
+# 7.3 — Illustrative forecast example table. Column VALUES and headers
+# come straight from the .md's own table (no second, hand-typed copy of
+# the same numbers to drift out of sync); only the per-column-group
+# coloring and fixed pixel-measured widths — pure presentation — stay
+# Python-authored, keyed by header text so they survive column
+# reordering as long as the header text itself doesn't change.
+# ------------------------------------------------------------------
+_FORECAST_GROUP_BY_HEADER = {
+    "Budget": "mkt", "CPM": "mkt", "Impr.": "mkt", "CTR": "mkt", "Visitors": "mkt", "ROAS": "mkt",
+    "Conv. rate": "com", "Conv.": "com", "CPA": "com", "AOV": "com",
+    "Retention": "ret", "Repeat purch.": "ret", "Total conv.": "ret",
+    "Revenue": "fin", "Fixed exp.": "fin", "Total exp.": "fin", "Profit": "fin", "ROI": "fin",
+}
+# Percent widths, positional (one per column in the table's own header
+# order), measured from actual Playwright header/data text widths so
+# every header renders on one line without wrapping or overflowing —
+# see the historical note this replaces for how they were derived.
+_FORECAST_COL_WIDTHS = [
+    4.174, 4.77, 3.578, 4.353, 3.697, 5.963, 3.697, 7.156, 4.353, 3.578, 3.697, 6.559, 8.945, 7.752, 5.367, 7.156, 6.559, 4.77, 3.876,
+]
+
+def render_forecast_table(table_block):
+    headers = table_block["headers"]
+    widths = _FORECAST_COL_WIDTHS if len(_FORECAST_COL_WIDTHS) == len(headers) else [100.0 / len(headers)] * len(headers)
+    colgroup = ''.join(f'<col style="width:{w}%">' for w in widths)
+    def grp_cls(h):
+        g = _FORECAST_GROUP_BY_HEADER.get(h)
+        return f' class="sec-{g}"' if g else ''
+    head_cells = ''.join(f'<th{grp_cls(h)}>{inline_to_html(h)}</th>' for h in headers)
+    body_rows = []
+    for row in table_block["rows"]:
+        cells = ''.join(f'<td{grp_cls(h)}>{inline_to_html(v)}</td>' for h, v in zip(headers, row))
+        body_rows.append(f'<tr>{cells}</tr>')
+    return f'<table class="fcast"><colgroup>{colgroup}</colgroup><tr>{head_cells}</tr>{"".join(body_rows)}</table>'
+
+_sec_forecast = _ch7.section("Illustrative Example: What a Plan Looks Like Over Time")
+_fcb = _sec_forecast.blocks  # [illustrative-callout-lead, table, closing-note]
+_forecast_table_block = next(b for b in _fcb if b["type"] == "table")
+_forecast_intro = next(b for b in _fcb if b["type"] == "para" and b.get("lead"))
+_forecast_closing = _fcb[-1]
+PAGES.append(f'''<div class="page">
+{pagehead("07", "Illustrative Example: A Plan Over Time")}
+<div class="eyebrow">Illustrative only — not a forecast</div>
+<h1 class="sec">{_sec_forecast.title}</h1>
+<div class="secrule" style="margin-bottom:6px"></div>
+<div class="callout" style="margin:6px 0;padding:8px 16px">{_forecast_intro["html"]}</div>
+<div class="tbl-legend">
+  <span><span class="dot" style="background:var(--gold)"></span>Marketing</span>
+  <span><span class="dot" style="background:var(--gold-deep)"></span>Commerce</span>
+  <span><span class="dot" style="background:var(--muted)"></span>Repeat customers</span>
+  <span><span class="dot" style="background:var(--purple)"></span>Financial</span>
+</div>
+{render_forecast_table(_forecast_table_block)}
+{render_block(_forecast_closing)}
+{pagefoot()}
+</div>''')
+
+# ==================================================================
+# DIVIDER 08 — Growth Modes (new chapter — build report point 3).
+# already existed in the old chapter 2, and Track B/C's value-sharing
+# alignment already existed there too — this chapter unifies the three
+# under one banner rather than inventing anything new.
+# ==================================================================
+_ch8 = G.chapter("8")
+PAGES.append(divider("08", _ch8,
+    "How much breathing room you are willing to give the model to grow beyond break-even — and which commercial structures support it."))
+
+_ch8_intro = _ch8.intro_blocks()[0]
+
+# ------------------------------------------------------------------
+# 8.1 — Tolerance. Content-architecture pass, v3.1: the single running-
+# period, tolerance level, temporary-deficit willingness + cap, AND the
+# Stop-Loss measurement period — the latter used to sit only in the
+# Intake Form's commercial section, moved here since its default is
+# cross-referenced from this very section's deficit paragraph) — one
+# extra block vs. before, so the two-physical-page split point below is
+# [0,1,2] / [3,4,5,6] rather than the old [0,1,2] / [3,4,5].
+# ------------------------------------------------------------------
+_sec_tol = _ch8.section("Your Tolerance Level and Period")
+_tb2 = _sec_tol.blocks  # [plain-terms, example, default-callout, deficit-callout, ask-sentence, rights]
+# English runs longer than Hebrew: this page needs the .dense treatment to
+# stay on one A4 page instead of spilling its footer onto an orphan page.
+PAGES.append(content_page("08", _sec_tol.title, "Flexibility around profitability", _sec_tol.title, "\n".join([
+    '<div class="dense">',
+    render_block(_ch8_intro),
+    render_block(_tb2[0]),
+    render_block(_tb2[1]),
+    render_block(_tb2[2]),
+    render_block(_tb2[3]),
+    render_block(_tb2[4]),
+    render_block(_tb2[5]),
+    '</div>',
+])))
+
+# ------------------------------------------------------------------
+# 8.2 — Staged commercial architecture + shared growth. Two md sections
+# combined onto one page (a page-grouping choice), the second kept
+# under its own real section-title as an h2.sub.
+# ------------------------------------------------------------------
+_sec_flex = _ch8.section("Commercial Flexibility — Architecture, Not a Discount")
+_sec_growth = _ch8.section("Shared Growth — to the Extent the Commercial Structure Allows")
+_flex_body = "\n".join([
+    render_blocks(_sec_flex.blocks),
+    f'<h2 class="sub">{_sec_growth.title}</h2>',
+    render_blocks(_sec_growth.blocks),
+])
+PAGES.append(content_page("08", _sec_flex.title, "Architecture, not a discount", _sec_flex.title, _flex_body))
+
+# ==================================================================
+# DIVIDER 09 — Execution & Ongoing Reporting (new chapter — build
+# report point 6: the oversight mechanics that used to be folded into
+# the old budget chapter, now clearly the "actual deployed budget"
+# control layer).
+# ==================================================================
+_ch9 = G.chapter("9")
+PAGES.append(divider("09", _ch9,
+    "What happens after signing: how the engagement works, the reporting cadence, what requires your approval, and what happens if the Stop-Loss threshold is crossed."))
+
+# 9.0 — How the engagement works (moved here from chapter 1:
+# operational/legal mechanics belong after signing, not in the opening)
+PAGES.append(generic_section_page("09", _ch9.section("How the Engagement Works"), "The Operating Framework"))
+
+# ------------------------------------------------------------------
+# 9.1 — Oversight & reporting. Each bullet's own leading bold phrase
+# becomes its card title (split_lead), the rest of that bullet its card
+# body.
+# ------------------------------------------------------------------
+_sec_oversight = _ch9.section("Ongoing Oversight and Reporting")
+_oversight_ulist = _sec_oversight.blocks[1]
+_oversight_cards = []
+for item_html in _oversight_ulist["items"]:
+    m = re.match(r'^<strong>(.+?)</strong>\s*(.*)$', item_html)
+    title = (m.group(1).rstrip('.') if m else item_html)
+    body = m.group(2) if m else ''
+    _oversight_cards.append(f'<div class="card"><div class="card-label">{title}</div><p>{body}</p></div>')
+# 5 cards no longer fit one page under a real intro paragraph (the
+# verbatim intro is longer than the old paraphrase) — 3 + 2 across two
+# physical pages, same content_page shell.
+PAGES.append(content_page("09", _sec_oversight.title, "What happens after signing", _sec_oversight.title, "\n".join([
+    render_block(_sec_oversight.blocks[0]),
+    '<div class="cardgrid grid3">' + "".join(_oversight_cards[:3]) + '</div>',
+    '<div class="cardgrid grid2">' + "".join(_oversight_cards[3:]) + '</div>',
+])))
+
+# ==================================================================
+# DIVIDER 10 — The Practical Journey: Genesis to a signed Proposal
+# (new chapter — build report point 4: this used to be the tail of the
+# old Genesis chapter with no divider of its own; separating it from
+# Genesis's own substance keeps chapter 4 focused and gives this
+# step-by-step walkthrough its own well-placed home as the guide's
+# closing chapter. Content-architecture pass, v3.1: this chapter used to
+# lead into the standalone Intake Form (hence the arrow ghost numeral
+# instead of "10"); now that the form is gone and chapter 10 is simply
+# the last numbered chapter, it gets the normal ghost numeral like every
+# other chapter divider.
+# ==================================================================
+_ch10 = G.chapter("10")
+PAGES.append(divider("10", _ch10,
+    "From Genesis to a signed Proposal — the full process, step by step, and the Client Intake Form that sets it in motion."))
+
+# ------------------------------------------------------------------
+# 10.1 — Process diagram. Steps are the section's own numbered list, in
+# ------------------------------------------------------------------
+_sec_process = _ch10.section("From the Guide to the Proposal")
+_process_olist = next(b for b in _sec_process.blocks if b["type"] == "olist")
+_process_existing_clients = next(b for b in _sec_process.blocks if b["type"] == "para")
+_steps_html = "".join(
+    f'<div class="pstep"><div class="pnum">{i}</div><div class="ptxt">{item}</div></div>'
+    for i, item in enumerate(_process_olist["items"], start=1)
+)
+PAGES.append(content_page("10", _sec_process.title, "The process", _sec_process.title, "\n".join([
+    f'<div class="process">{_steps_html}</div>',
+    render_block(_process_existing_clients),
+])))
+
+# ------------------------------------------------------------------
+# 10.2 — Reminder
+# ------------------------------------------------------------------
+PAGES.append(generic_section_page("10", _ch10.section("Reminder"), "Before you continue", breadcrumb_title="Reminder"))
+
+# ------------------------------------------------------------------
+# 10.3 — Consolidated client intake form. Content-architecture pass,
+# v3.2: the fields that used to live scattered inline in chapters
+# 1/3/4/7/8 (v3.1's layout) are consolidated back into one end-of-
+# its own page via the generic fallback — plain paragraphs + the
+# section's own flist field rows, nothing bespoke.
+# ------------------------------------------------------------------
+PAGES.append(generic_section_page("10", _ch10.section("Client Intake Form"), "Client Intake Form"))
+PAGES.append(generic_section_page("10", _ch10.section("Client Intake Form — Commercial"), "Client Intake Form — Commercial"))
+PAGES.append(generic_section_page("10", _ch10.section("Client Intake Form — Strategic"), "Client Intake Form — Strategic"))
+
+# ==================================================================
+# Closing
+# ==================================================================
+PAGES.append(f'''<div class="page dark closing">
+  <div class="closing-ghost">LG</div>
+  <div class="closing-inner">
+    <div class="closing-eyebrow"><span class="dash"></span>In closing</div>
+    <div class="closing-title">All the information in this guide is for planning and assessment only</div>
+    <p>Signing the Engagement Agreement itself does involve the payment relevant to your track. The full commercial commitment to the scope, price and terms of the Specific Engagement is created only in a separately signed "Proposal" — until then, everything you have told us remains open to change.<br><br>We are ready when you are.</p>
+    <div class="closing-brand"><img src="{LOGO_MARK}"><div class="tx"><div class="n">LOS GARDIOS HOLDINGS</div><div class="t">Client Guide — Confidential</div></div></div>
+  </div>
+</div>''')
+
+body = "\n".join(PAGES)
+
+doc = f"""<!doctype html>
+<html lang="en" dir="ltr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Los Gardios — Client Guide</title>
+{embedded_font_css()}
+<style>{CSS}</style></head>
+<body><div class="sheet">
+{body}
+</div></body></html>"""
+
+io.open("CLIENT_GUIDE_EN.html", "w", encoding="utf-8").write(doc)
+print("wrote CLIENT_GUIDE_EN.html", len(doc), "bytes,", len(PAGES), "page blocks")

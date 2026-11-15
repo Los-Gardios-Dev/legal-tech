@@ -324,7 +324,7 @@ doc = f"""<!doctype html>
 <style>{CSS}</style></head>
 <body><div class="sheet">
 <div class="masthead">
-  <div><div class="mh-brand"><img src="{LOGO_MARK}" alt="Los Gardios" class="mh-mark">LOS GARDIOS</div>
+  <div><div class="mh-brand"><img src="{LOGO_MARK}" alt="Los Gardios" class="mh-mark">LOS GARDIOS HOLDINGS</div>
     <div style="margin-top:7px"><span class="conf">סודי · CONFIDENTIAL</span></div></div>
   <div class="mh-meta">לוס גרדיוס בע"מ<br>516819257 · השדרה המרכזית 15, מודיעין<br>גרסת תבנית 2 · ערכת מסמכי התקשרות אחידה</div>
 </div>

@@ -392,6 +392,7 @@ ASIDE_CLASS = {
     "דוגמה להמחשה בלבד — לא תחזית.": "callout",
     "הנתיב המועדף שלכם (מסלולים A/B/C):": "callout",
     "לא בטוחים איזה מסלול מתאים לכם?": "callout",
+    "על השמות:": "callout",
     # .callout.warn — restriction / what-you-don't-get
     "מה זה לא אומר:": "callout warn",
     # .fine — small muted print / footnote-style asides: legal-mechanism
